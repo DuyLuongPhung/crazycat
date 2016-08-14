@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="FrameWork">
+      <UniqueIdentifier>{e9d4649e-ea19-4ec9-9dfd-99bd56103eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Camera">
+      <UniqueIdentifier>{69811df8-9d6c-48bb-8565-72becfea99ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Collision">
+      <UniqueIdentifier>{79617c88-cb9b-412f-8d57-93f289c9c580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\DirectX">
+      <UniqueIdentifier>{6ec05fde-69d7-487f-9d83-a1fedc1cf483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Keyboard">
+      <UniqueIdentifier>{8220c3ed-6767-4ae0-8bd7-6300a92baf2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Sprite">
+      <UniqueIdentifier>{e213b395-e26e-45f7-96eb-0b25749d6731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Object">
+      <UniqueIdentifier>{ec2c70c0-6e24-417b-acb4-a8584f4bf5ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Text">
+      <UniqueIdentifier>{dcbec07b-d1b0-43e2-a393-d15ce115938b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Other">
+      <UniqueIdentifier>{b30fcc0e-fdbf-4a09-a4c2-52228873bcf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat">
+      <UniqueIdentifier>{2d4b4016-8466-4adb-9da9-aa532a3270ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat\Run">
+      <UniqueIdentifier>{63442e9f-7341-42d1-abd0-aef949e83abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat\Object">
+      <UniqueIdentifier>{ff0c6aa7-6ba9-4c29-ad75-41380455e090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat\Object\Character">
+      <UniqueIdentifier>{713b8097-35e7-4787-9a60-af41ab159e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat\Object\Brick">
+      <UniqueIdentifier>{d30e63a5-178f-48bd-9897-e3383a1b794f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat\Object\Pallet">
+      <UniqueIdentifier>{b6cf5fb8-f928-4edf-b0e2-372d001f1d50}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="QuadNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>FrameWork\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>FrameWork\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX.cpp">
+      <Filter>FrameWork\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>FrameWork\Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>FrameWork\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>FrameWork\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>FrameWork\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>FrameWork\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>FrameWork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicGameObject.cpp">
+      <Filter>FrameWork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticGameObject.cpp">
+      <Filter>FrameWork\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>CrazyCat\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>CrazyCat\Object\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CrazyCat.cpp">
+      <Filter>CrazyCat\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>CrazyCat\Object\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Pallet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="QuadNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>FrameWork\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>FrameWork\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>FrameWork\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX.h">
+      <Filter>FrameWork\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>FrameWork\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>FrameWork\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>FrameWork\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>FrameWork\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>FrameWork\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CONST.h">
+      <Filter>FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicGameObject.h">
+      <Filter>FrameWork\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticGameObject.h">
+      <Filter>FrameWork\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>CrazyCat\Object\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CrazyCat.h">
+      <Filter>CrazyCat\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>CrazyCat\Object\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Pallet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
