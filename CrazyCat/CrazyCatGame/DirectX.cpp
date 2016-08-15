@@ -117,7 +117,6 @@ LPDIRECT3DSURFACE9 LoadSurfaceFromFile(LPDIRECT3DDEVICE9 d3ddev, LPWSTR filePath
 	result = d3ddev->CreateOffscreenPlainSurface(info.Width, info.Height, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
 	if (result != D3D_OK)
 		return NULL;
-
 	result = D3DXLoadSurfaceFromFile(surface, NULL, NULL, filePath, NULL, D3DX_DEFAULT, transparentColor, &info);
 	if (result != D3D_OK)
 		return NULL;

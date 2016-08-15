@@ -108,7 +108,7 @@ namespace MapEditor.UtilsForm
                 || path.EndsWith(".bmp")))
             {
                 FileStream streamImg = new FileStream(path, FileMode.Open);
-                Image bm = Image.FromStream(streamImg);
+                Bitmap bm = new Bitmap(Image.FromStream(streamImg));
                 streamImg.Flush();
                 streamImg.Close();
                 pictureBox1.Size = new Size(bm.Width, bm.Height);

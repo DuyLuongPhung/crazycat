@@ -35,3 +35,5 @@
 #define SLIDE_HEIGHT 72
 #define DEAD_HURT_WIDTH 81
 #define DEAD_HURT_HEIGHT 91
+
+#define BRICK_ID 1

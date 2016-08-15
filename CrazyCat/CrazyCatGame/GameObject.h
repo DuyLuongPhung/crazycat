@@ -22,6 +22,8 @@ public:
 	CGameObject(int id, float x, float y, float width, float height, float vx, float vy);
 	~CGameObject();
 
+	int					getId(){ return this->_id; }
+
 	void				setPosition(float x, float y);
 	D3DXVECTOR2			getPosition(){ return D3DXVECTOR2(this->_position_x,this->_position_y); }
 

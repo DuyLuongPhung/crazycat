@@ -25,12 +25,12 @@ CrazyCat::~CrazyCat()
 bool intersec = false;
 void CrazyCat::Update(int Delta)
 {
-	if (intersec)
-	Sleep(3000);
+	//if (intersec)
+	//Sleep(3000);
 	//UpdateMap();
 	UpdateCharacter(Delta);
 	
-	CBox tileBox = _tile_object->getBounding();
+	/*CBox tileBox = _tile_object->getBounding();
 	CBox characterBox = _character->getBounding();
 	characterBox.vx = characterBox.vx*Delta;
 	characterBox.vy = characterBox.vy*Delta;
@@ -62,7 +62,7 @@ void CrazyCat::Update(int Delta)
 		lalbelTest = "None";
 		intersec = false;
 		break;
-	}
+	}*/
 	
 }
 
@@ -117,6 +117,10 @@ void CrazyCat::LoadResources(LPDIRECT3DDEVICE9 d3ddv)
 	_mapMaxWidth = 9600;
 	_character = new CCharacter(_directXDivice->getSpriteHandler(), 100, 100, _mapMaxWidth, _mapMaxHeight);
 	_tile_object = new CDynamicGameObject(1, 0, 32, 800, 32, 0.0f, 0.0f, _directXDivice->getSpriteHandler(), L"Tile.png", 1, 1);
+
+	_map = new Map();
+	_map->inital(this->_directXDivice->getDevice(), L"BG.png", L"map1_v1.img", L"map1_v1.map", L"map1_v1.info", this->_screenWidth, this->_screenHeight);
+
 }
 
 int CrazyCat::LoadBackground(LPWSTR fileText, LPWSTR fileImage, int rows, int columns, int tiles, int tileWidth, int tileHeight)
@@ -235,8 +239,10 @@ void CrazyCat::RenderFrame(LPDIRECT3DDEVICE9 d3ddv, int t)
 	//last_time = now;
 	//}
 
+	_map->render(this->_directXDivice, _Camera->GetPositionCamera());
+
 	_directXDivice->getSpriteHandler()->Begin(D3DXSPRITE_ALPHABLEND);
-	_tile_object->draw(_Camera->GetPositionCamera());
+	//_tile_object->draw(_Camera->GetPositionCamera());
 	_character->RenderCharacter(_Camera->GetPositionCamera());
 	/*for (int i = 0; i < 300; i++){
 		_mtile->draw(_Camera->GetPositionCamera(), map->_listObject[i].x, map->_listObject[i].y);
@@ -323,26 +329,28 @@ void CrazyCat::ProcessInput(LPDIRECT3DDEVICE9 d3ddv, int t)
 {
 	if (_keyboardDevice->IsKeyDown(DIK_RIGHT))
 	{
-		_character->setVelocity( _character->getVelocity().x + 5, _character->getVelocity().y);
+		_character->setPosition(_character->getPosition().x + 5, _character->getPosition().y);
+		//_character->setVelocity( _character->getVelocity().x + 50, _character->getVelocity().y);
 		//_character->
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_LEFT))
 	{
+		_character->setPosition(_character->getPosition().x - 5, _character->getPosition().y);
 		//velocityx = -5;
-		_character->setVelocity(_character->getVelocity().x - 5, _character->getVelocity().y);
+		//_character->setVelocity(_character->getVelocity().x - 5, _character->getVelocity().y);
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_UP))
 	{
 		//velocityy = 5;
-		_character->setVelocity(_character->getVelocity().x , _character->getVelocity().y +5);
+		//_character->setVelocity(_character->getVelocity().x , _character->getVelocity().y +5);
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_DOWN))
 	{
 		//velocityy = -5;
-		_character->setVelocity(_character->getVelocity().x, _character->getVelocity().y-5);
+		//_character->setVelocity(_character->getVelocity().x, _character->getVelocity().y-5);
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	/*else if (_keyboardDevice->IsKeyDown(DIK_UP))

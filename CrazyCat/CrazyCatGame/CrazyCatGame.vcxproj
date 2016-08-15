@@ -97,6 +97,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Pallet.cpp" />
     <ClCompile Include="QuadNode.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StaticGameObject.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Pallet.h" />
     <ClInclude Include="QuadNode.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StaticGameObject.h" />
     <ClInclude Include="Text.h" />

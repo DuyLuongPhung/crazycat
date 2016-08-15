@@ -23,7 +23,7 @@ namespace MapEditor.UserControlDesign
     {
         public int Index;
         public string Path;
-        public int ID;
+        public int TypeID;
         public Image ShowImage;
         public int MoveStatus;
         public bool IsMoveAble;
@@ -31,11 +31,11 @@ namespace MapEditor.UserControlDesign
         public int SpritePerRow;
         public int ItemWidth;
         public int ItemHeight;
-        public ItemInfo(int index, int id, Image showImg, string path, bool isMoveAble, int countSprite, int spritePerRow,
+        public ItemInfo(int index, int typeId, Image showImg, string path, bool isMoveAble, int countSprite, int spritePerRow,
             int itemWidth, int itemHeight)
         {
             this.Index = index;
-            this.ID = id;
+            this.TypeID = typeId;
             this.ShowImage = showImg;
             this.Path = path;
             this.IsMoveAble = isMoveAble;

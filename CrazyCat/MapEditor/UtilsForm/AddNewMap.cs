@@ -243,7 +243,12 @@ namespace MapEditor.UtilsForm
                 frmMain._tileWidth = tileWidth;
                 frmMain._screenWidth = screenWidth;
                 frmMain._screenHeight = screenHeight;
-                frmMain._background = Image.FromFile(txtBackground.Text);
+                using (FileStream fs = new FileStream(txtBackground.Text, FileMode.Open))
+                {
+                    frmMain._background = new Bitmap(Image.FromStream(fs));
+                    fs.Flush();
+                    fs.Close();
+                }
                 frmMain._createdSuccessed = true;
                 this.Close();
             }

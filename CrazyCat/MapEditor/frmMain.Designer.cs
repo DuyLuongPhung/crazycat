@@ -32,8 +32,7 @@ namespace MapEditor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.panel1 = new System.Windows.Forms.Panel();
             this.pnItem = new System.Windows.Forms.Panel();
-            this.ptbRemoveItem = new System.Windows.Forms.PictureBox();
-            this.ptbAddItem = new System.Windows.Forms.PictureBox();
+            this.imageListView1 = new MapEditor.UserControlDesign.ImageListView();
             this.pnInformation = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.txtTileHeight = new System.Windows.Forms.TextBox();
@@ -44,19 +43,21 @@ namespace MapEditor
             this.txtTileWidth = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pnButton = new System.Windows.Forms.Panel();
+            this.ptbRemoveItem = new System.Windows.Forms.PictureBox();
+            this.ptbAddItem = new System.Windows.Forms.PictureBox();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnOpenMap = new System.Windows.Forms.Button();
             this.btnSaveMap = new System.Windows.Forms.Button();
             this.btnNewMap = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.pnMapDraw = new MapEditor.UserControlDesign.MyPanel();
-            this.imageListView1 = new MapEditor.UserControlDesign.ImageListView();
+            this.btnExport = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.pnItem.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ptbRemoveItem)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptbAddItem)).BeginInit();
             this.pnInformation.SuspendLayout();
             this.pnButton.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ptbRemoveItem)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptbAddItem)).BeginInit();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,33 +81,16 @@ namespace MapEditor
             this.pnItem.Size = new System.Drawing.Size(370, 282);
             this.pnItem.TabIndex = 2;
             // 
-            // ptbRemoveItem
+            // imageListView1
             // 
-            this.ptbRemoveItem.Cursor = System.Windows.Forms.Cursors.Default;
-            this.ptbRemoveItem.Image = global::MapEditor.Properties.Resources.delete_icon;
-            this.ptbRemoveItem.Location = new System.Drawing.Point(272, 11);
-            this.ptbRemoveItem.Name = "ptbRemoveItem";
-            this.ptbRemoveItem.Size = new System.Drawing.Size(34, 29);
-            this.ptbRemoveItem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ptbRemoveItem.TabIndex = 0;
-            this.ptbRemoveItem.TabStop = false;
-            this.ptbRemoveItem.Click += new System.EventHandler(this.ptbRemoveItem_Click);
-            this.ptbRemoveItem.MouseLeave += new System.EventHandler(this.btnNewMap_MouseLeave);
-            this.ptbRemoveItem.MouseMove += new System.Windows.Forms.MouseEventHandler(this.btnNewMap_MouseMove);
-            // 
-            // ptbAddItem
-            // 
-            this.ptbAddItem.Cursor = System.Windows.Forms.Cursors.Default;
-            this.ptbAddItem.Image = global::MapEditor.Properties.Resources.add_icon;
-            this.ptbAddItem.Location = new System.Drawing.Point(193, 11);
-            this.ptbAddItem.Name = "ptbAddItem";
-            this.ptbAddItem.Size = new System.Drawing.Size(35, 29);
-            this.ptbAddItem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ptbAddItem.TabIndex = 1;
-            this.ptbAddItem.TabStop = false;
-            this.ptbAddItem.Click += new System.EventHandler(this.ptbAddItem_Click);
-            this.ptbAddItem.MouseLeave += new System.EventHandler(this.btnNewMap_MouseLeave);
-            this.ptbAddItem.MouseMove += new System.Windows.Forms.MouseEventHandler(this.btnNewMap_MouseMove);
+            this.imageListView1.CurrentIndex = 0;
+            this.imageListView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageListView1.Location = new System.Drawing.Point(0, 0);
+            this.imageListView1.Name = "imageListView1";
+            this.imageListView1.SelectedImageName = null;
+            this.imageListView1.Size = new System.Drawing.Size(370, 282);
+            this.imageListView1.TabIndex = 0;
+            this.imageListView1.ImageIndexChange += new System.EventHandler(this.imageListView1_ImageIndexChange);
             // 
             // pnInformation
             // 
@@ -214,6 +198,7 @@ namespace MapEditor
             // pnButton
             // 
             this.pnButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnButton.Controls.Add(this.btnExport);
             this.pnButton.Controls.Add(this.ptbRemoveItem);
             this.pnButton.Controls.Add(this.ptbAddItem);
             this.pnButton.Controls.Add(this.btnExit);
@@ -227,6 +212,34 @@ namespace MapEditor
             this.pnButton.TabIndex = 0;
             this.pnButton.MouseLeave += new System.EventHandler(this.pnButton_MouseLeave);
             this.pnButton.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnButton_MouseMove);
+            // 
+            // ptbRemoveItem
+            // 
+            this.ptbRemoveItem.Cursor = System.Windows.Forms.Cursors.Default;
+            this.ptbRemoveItem.Image = global::MapEditor.Properties.Resources.delete_icon;
+            this.ptbRemoveItem.Location = new System.Drawing.Point(306, 11);
+            this.ptbRemoveItem.Name = "ptbRemoveItem";
+            this.ptbRemoveItem.Size = new System.Drawing.Size(34, 29);
+            this.ptbRemoveItem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ptbRemoveItem.TabIndex = 0;
+            this.ptbRemoveItem.TabStop = false;
+            this.ptbRemoveItem.Click += new System.EventHandler(this.ptbRemoveItem_Click);
+            this.ptbRemoveItem.MouseLeave += new System.EventHandler(this.btnNewMap_MouseLeave);
+            this.ptbRemoveItem.MouseMove += new System.Windows.Forms.MouseEventHandler(this.btnNewMap_MouseMove);
+            // 
+            // ptbAddItem
+            // 
+            this.ptbAddItem.Cursor = System.Windows.Forms.Cursors.Default;
+            this.ptbAddItem.Image = global::MapEditor.Properties.Resources.add_icon;
+            this.ptbAddItem.Location = new System.Drawing.Point(256, 11);
+            this.ptbAddItem.Name = "ptbAddItem";
+            this.ptbAddItem.Size = new System.Drawing.Size(35, 29);
+            this.ptbAddItem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ptbAddItem.TabIndex = 1;
+            this.ptbAddItem.TabStop = false;
+            this.ptbAddItem.Click += new System.EventHandler(this.ptbAddItem_Click);
+            this.ptbAddItem.MouseLeave += new System.EventHandler(this.btnNewMap_MouseLeave);
+            this.ptbAddItem.MouseMove += new System.Windows.Forms.MouseEventHandler(this.btnNewMap_MouseMove);
             // 
             // btnExit
             // 
@@ -299,16 +312,15 @@ namespace MapEditor
             this.pnMapDraw.MouseLeave += new System.EventHandler(this.pnMapDraw_MouseLeave);
             this.pnMapDraw.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMapDraw_MouseMove);
             // 
-            // imageListView1
+            // btnExport
             // 
-            this.imageListView1.CurrentIndex = 0;
-            this.imageListView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imageListView1.Location = new System.Drawing.Point(0, 0);
-            this.imageListView1.Name = "imageListView1";
-            this.imageListView1.SelectedImageName = null;
-            this.imageListView1.Size = new System.Drawing.Size(370, 282);
-            this.imageListView1.TabIndex = 0;
-            this.imageListView1.ImageIndexChange += new System.EventHandler(this.imageListView1_ImageIndexChange);
+            this.btnExport.Location = new System.Drawing.Point(162, 3);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(75, 52);
+            this.btnExport.TabIndex = 4;
+            this.btnExport.Text = "Export";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
             // frmMain
             // 
@@ -324,11 +336,11 @@ namespace MapEditor
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.pnItem.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ptbRemoveItem)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptbAddItem)).EndInit();
             this.pnInformation.ResumeLayout(false);
             this.pnInformation.PerformLayout();
             this.pnButton.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ptbRemoveItem)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptbAddItem)).EndInit();
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -357,5 +369,6 @@ namespace MapEditor
         private MapEditor.UserControlDesign.ImageListView imageListView1;
         private System.Windows.Forms.PictureBox ptbRemoveItem;
         private System.Windows.Forms.PictureBox ptbAddItem;
+        private System.Windows.Forms.Button btnExport;
     }
 }
