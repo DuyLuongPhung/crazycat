@@ -21,15 +21,15 @@ void CGame::_SetScreenDimension(int Mode)
 	switch (Mode)
 	{
 	case GAME_SCREEN_RESOLUTION_24:
-		_screenWidth = 800;
-		_screenHeight = 576;
+		_screenWidth = 480;
+		_screenHeight = 380;
 		_depth = 24;
 		_backBufferFormat = D3DFMT_X8R8G8B8;
 		break;
 
 	case GAME_SCREEN_RESOLUTION_32:
-		_screenWidth = 800;
-		_screenHeight = 576;
+		_screenWidth = 480;
+		_screenHeight = 380;
 		_depth = 32;
 		_backBufferFormat = D3DFMT_X8R8G8B8;
 		break;

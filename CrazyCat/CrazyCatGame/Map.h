@@ -60,21 +60,21 @@ class Map
 {
 public:
 	LPDIRECT3DSURFACE9 _m_background;			// màn hình nền
-	LPDIRECT3DSURFACE9  _m_tile_background;		// màn hình với các đối tượng tĩnh
-	//CSprite * _map_sprite;
 
-	int _screen_height;							// chiều cao màn hình hiện tại
-	int _screen_width;							// chiều rộng màn hình hiện tại
+	int _screen_height;							// chiều cao màn hình cho in map và nhân vật, không tính thanh bar
+	int _screen_width;							// chiều rộng màn hình cho in map và nhân vật, không tính thanh bar
 	int _m_width;								// chiều rộng của map 
 	int _m_height;								// chiều cao của map
-	CBox* _listObject;							// Các đối tượng trong map
-	CQuadTree * _m_quad_object;					// quad tree
+	//CBox* _listObject;							// Các đối tượng trong map
+	//CQuadTree * _m_quad_object;					// quad tree
+
+	std::vector<CGameObject*> _list_objects;
 	
 public:
 	Map();
 	~Map();
 
-	void inital(LPDIRECT3DDEVICE9 d3ddev, LPWSTR backgroundPath,LPWSTR tilePathImg, LPWSTR tilePathTxt, 
+	void inital(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt, 
 		LPWSTR objectPath, int scrWidth, int scrHeight);
 	void render(CDirectX * directX, D3DXVECTOR2 viewPort);
 private:

@@ -164,9 +164,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>FrameWork\Object</Filter>
     </ClInclude>
-    <ClInclude Include="CONST.h">
-      <Filter>FrameWork</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicGameObject.h">
       <Filter>FrameWork\Object</Filter>
     </ClInclude>
@@ -193,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="QuadTree.h">
       <Filter>FrameWork\QuadTree</Filter>
+    </ClInclude>
+    <ClInclude Include="CONST.h">
+      <Filter>CrazyCat</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

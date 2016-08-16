@@ -152,11 +152,17 @@ namespace MapEditor.UtilsForm
                 || path.EndsWith(".jpg") || path.EndsWith(".jpeg")
                 || path.EndsWith(".bmp")))
             {
-                Image im = Image.FromFile(path);
-                pictureBox1.Size = new Size(im.Width, im.Height);
-                pictureBox1.Image = im;
-                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-                _IsLoadImage = true;
+                using (FileStream fs = new FileStream(path, FileMode.Open))
+                {
+                    Bitmap im = new Bitmap(Image.FromStream(fs));
+                    pictureBox1.Size = new Size(im.Width, im.Height);
+                    pictureBox1.Image = im;
+                    pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                    _IsLoadImage = true;
+                    fs.Flush();
+                    fs.Close();
+                }
+                
             }
             else
             {

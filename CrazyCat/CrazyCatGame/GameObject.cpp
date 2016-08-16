@@ -43,12 +43,12 @@ void CGameObject::setVelocity(float vx, float vy)
 	this->_velocity_y = vy;
 }
 
-void CGameObject::inital()
+void CGameObject::inital(LPD3DXSPRITE sprite_handler)
 {
 
 }
 
-void CGameObject::update()
+void CGameObject::update(int deltaTime)
 {
 
 }

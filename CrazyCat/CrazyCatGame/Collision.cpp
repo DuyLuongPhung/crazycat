@@ -11,12 +11,17 @@ CCollision::CCollision()
 ***************************************************************************************/
 bool Intersec(CBox box1, CBox box2)
 {
-	bool intersecX, intersecY;
+	float l = box2.x - (box1.x + box1.w);
+	float r = (box2.x + box2.w) - box1.x;
+	float t = box2.y - (box1.y - box1.h);
+	float b = (box2.y - box2.h) - box1.y;
 
-	intersecX = ((abs(box1.x - box2.x)) <= (box1.w + box2.w)) ? true : false;
-	intersecY = ((abs(box1.y - box2.y)) <= (box1.h + box2.h)) ? true : false;
+	// chưa xảy ra va chạm
+	if (l > 0 || r < 0 || t < 0 || b > 0)
+		return false;
 
-	return (intersecX && intersecY);
+	return true;
+
 }
 
 
@@ -71,6 +76,9 @@ DIRECTION AABB(CBox box1, CBox box2){
 		// kiểm tra khả năng xảy ra va chạm
 		// Tính khung của đối tượng ở frame này
 		// Khả năng đối tượng sẽ di chuyển đến vị trí này
+		box1.vx -= box2.vx;
+		box1.vy -= box2.vy;
+		box2.vx = box2.vy = 0.0f;
 		CBox moveBox = GetSweptBroadPhaseBox(box1);
 		// Nếu đối tượng đứng yên - box2, nằm trong vùng di chuyển của đối tượng di chuyển - box1 thì
 		// có khả năng xảy ra va chạm và ngược lại thì không có khả năng xảy ra va chạm
@@ -202,6 +210,18 @@ float SweptAABB(CBox b1, CBox b2, float& normalx, float& normaly)
 ***************************************************************************************/
 DIRECTION CCollision::isCollision(CBox box1, CBox box2, float &collisionTime)
 {
+	DIRECTION dir = AABB(box1, box2);
+
+	// đang xảy ra va chạm hoặc không có khả năng va chạm
+	if (dir != DIRECTION::NONE_CAN)
+		return dir;
+		
+	// TH cả 2 đều không có vận tốc
+	if (box1.vx == 0.0f && box1.vy == 0.0f && box2.vx == 0.0f && box2.vy == 0.0f)
+		return DIRECTION::NONE;
+
+	// TH có khả năng xảy ra va chạm
+	// kiểm tra va chạm và thời điểm va chạm, hướng va chạm (nếu có)
 	collisionTime = -1.0f;
 	float normalX = 0.0f, normalY = 0.0f;
 	CBox moveBox = box1;
@@ -209,27 +229,16 @@ DIRECTION CCollision::isCollision(CBox box1, CBox box2, float &collisionTime)
 	moveBox.vx -= staticBox.vx;
 	moveBox.vy -= staticBox.vy;
 	staticBox.vx = staticBox.vy = 0.0f;
-
-	// Kiểm tra xem hiện tại có đang va chạm hay không?
-	// Kiểm tra xem với vận tốc đó có khả năng xảy ra va chạm hay không
-	DIRECTION dir = AABB(moveBox, staticBox);
-	// TH hiện tại chưa xảy ra va chạm tuy nhiên có khả năng xảy ra va chạm ở frame này
-	if (dir == DIRECTION::NONE_CAN){	
-		collisionTime = SweptAABB(moveBox, staticBox, normalX, normalY);
-		if (normalY == 1.0f)
-			return DIRECTION::TOP;
-		if (normalY == -1.0f)
-			return DIRECTION::BOTTOM;
-		if (normalX == 1.0f)
-			return DIRECTION::RIGHT;
-		if (normalX == -1.0f)
-			return DIRECTION::LEFT;
-		return DIRECTION::NONE;
-	}
-	// TH có thể đang xảy ra va chạm hoặc không có khả năng xảy ra va chạm ở frame này
-	else{
-		return dir;
-	}
+	collisionTime = SweptAABB(moveBox, staticBox, normalX, normalY);
+	if (normalY == 1.0f)
+		return DIRECTION::TOP;
+	if (normalY == -1.0f)
+		return DIRECTION::BOTTOM;
+	if (normalX == 1.0f)
+		return DIRECTION::RIGHT;
+	if (normalX == -1.0f)
+		return DIRECTION::LEFT;
+	return DIRECTION::NONE;
 }
 
 CCollision::~CCollision()

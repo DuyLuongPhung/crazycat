@@ -303,7 +303,7 @@ namespace MapEditor
                                   pnMapDraw.ClientSize.Height))
                     {
                         pnMapDraw.DrawToBitmap(bitmap, pnMapDraw.ClientRectangle);
-                        bitmap.Save(Path.Combine(folder,"fullImage.png"), System.Drawing.Imaging.ImageFormat.Jpeg);
+                        bitmap.Save(Path.Combine(folder,"fullImage.png"), System.Drawing.Imaging.ImageFormat.Png);
                     }
 
                     save = false;
@@ -387,6 +387,7 @@ namespace MapEditor
                 int row = y / (_tileHeight);
                 x = _margin + col * (_tileWidth);
                 y = _margin + row * (_tileHeight);
+
                 ItemObject item = new ItemObject(_listSourceItem[_index].Index, _listSourceItem[_index].TypeID, x, y, _listSourceItem[_index].ItemWidth, _listSourceItem[_index].ItemHeight);
                 
                 int search = _allItemAdded.FindIndex(it => (it.ItemRectangle.X == item.ItemRectangle.X && it.ItemRectangle.Y == item.ItemRectangle.Y
@@ -571,6 +572,8 @@ namespace MapEditor
             if (root == null)
                 return false;
             //write object's information
+            int mapHeight = _background.Height;
+
             List<ItemObject> allItem = root.GetAllObjects();
             for (int i = 0; i < allItem.Count; i++)
             {
@@ -578,7 +581,7 @@ namespace MapEditor
                     + allItem[i].ItemInfoIndex + " "               // item index
                     + root.Id + " "                             // node id 
                     + allItem[i].ItemRectangle.X + " "          // position X
-                    + allItem[i].ItemRectangle.Y + " "          // position Y
+                    + (mapHeight - allItem[i].ItemRectangle.Y) + " "          // position Y
                     );
             }
             if (root.NodeLT != null)
@@ -647,7 +650,7 @@ namespace MapEditor
                                 );
                         }
                     }
-                    bitmapSave.Save(mapPathImage, ImageFormat.Jpeg);
+                    bitmapSave.Save(mapPathImage, ImageFormat.Png);
                 }
                 for (int j = 0; j < mapIndex.Length; j++)
                 {

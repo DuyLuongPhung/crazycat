@@ -3,14 +3,10 @@
 
 Map::Map(){
 	this->_m_background = NULL;
-	this->_m_tile_background = NULL;
-
 	this->_screen_height = 0;
 	this->_screen_width = 0;
 	this->_m_width = 0;
 	this->_m_height = 0;
-	this->_listObject = NULL;
-	//this->_map_sprite = NULL;
 }
 
 
@@ -19,28 +15,31 @@ Map::~Map()
 	
 }
 
-void Map::inital(LPDIRECT3DDEVICE9 d3ddev, LPWSTR backgroundPath, LPWSTR tilePathImg, LPWSTR tilePathTxt,
+void Map::inital(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt,
 	LPWSTR objectPath,  int scrWidth, int scrHeight){
-	this->_m_background = LoadSurfaceFromFile(d3ddev, backgroundPath, D3DCOLOR_XRGB(255, 0, 255));
 	readMapTileBackground(d3ddev, tilePathImg, tilePathTxt, this->_m_width, this->_m_height);
 	this->_screen_height = scrHeight;
 	this->_screen_width = scrWidth;
 	readMapObjects(objectPath);
 }
 
-
 void Map::render(CDirectX * directX, D3DXVECTOR2 viewPort){
-
-	// vẽ ảnh nền
-	//directX->getDevice()->StretchRect(this->_m_background, NULL,directX->getBackBuffer(), NULL, D3DTEXF_NONE);
-	// vẽ các đối tượng tĩnh
+	// lấy khung hình cho frame hiện tại
 	RECT srcRect;
 	srcRect.left = viewPort.x;
 	srcRect.right = srcRect.left + this->_screen_width;
-	srcRect.top = viewPort.y - this->_screen_height;
+	srcRect.top = _m_height - viewPort.y;
 	srcRect.bottom = srcRect.top + this->_screen_height;
 
-	directX->getDevice()->StretchRect(this->_m_tile_background, &srcRect, directX->getBackBuffer(), NULL, D3DTEXF_NONE);
+	// lấy khung sẽ vẽ trên màn hình
+	RECT desRect;
+	desRect.left = 0;
+	desRect.right = desRect.left + this->_screen_width;
+	desRect.top = INFO_BAR_HEIGHT;
+	desRect.bottom = desRect.top + this->_screen_height;
+
+	// vẽ khung hình lên bạc buffer
+	directX->getDevice()->StretchRect(this->_m_background, &srcRect, directX->getBackBuffer(), &desRect, D3DTEXF_NONE);
 
 }
 
@@ -194,7 +193,7 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 		//CSprite shortImg
 
 		HRESULT hresult;
-		hresult = d3ddev->CreateOffscreenPlainSurface(mWidth, mHeight, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &this->_m_tile_background, NULL);
+		hresult = d3ddev->CreateOffscreenPlainSurface(mWidth, mHeight, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &this->_m_background, NULL);
 
 		if (hresult != D3D_OK)
 			return;
@@ -216,7 +215,7 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 						desRect.top = i*mTileHeight;
 						desRect.bottom = desRect.top + mTileHeight;
 
-						d3ddev->StretchRect(shortImg, &srcRect, this->_m_tile_background, &desRect, D3DTEXF_NONE);
+						d3ddev->StretchRect(shortImg, &srcRect, this->_m_background, &desRect, D3DTEXF_NONE);
 					}
 				}
 			}
@@ -224,7 +223,8 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 
 		#pragma endregion
 
-
+		this->_m_height = mHeight;
+		this->_m_width = mWidth;
 		myfile.close();
 	}
 	return;
@@ -388,6 +388,26 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 		#pragma endregion
 
 		myfile.close();
+		for (int j = 0; j < all_objects.size(); j++){
+			int typeId = -1;
+			int x = all_objects.at(j).x;
+			int y = all_objects.at(j).y;
+			int  w = 0, h = 0;
+			for (int k = 0; k < all_items.size(); k++){
+				if (all_objects.at(j).index == all_items.at(k).index){
+					w = all_items.at(k).w;
+					h = all_items.at(k).h;
+					typeId = all_items.at(k).typeId;
+					break;
+				}
+			}
+			if (typeId == BRICK_ID)
+			{
+				CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
+				all_objects.erase(all_objects.begin() + j--);
+				this->_list_objects.push_back(objAdd);
+			}
+		}
 
 		/*std::vector<CQuadNode*>* all_q_nodes;
 		for (int i = 0; i < all_quadnodes.size(); i++){

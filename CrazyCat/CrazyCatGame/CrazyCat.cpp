@@ -26,44 +26,94 @@ bool intersec = false;
 void CrazyCat::Update(int Delta)
 {
 	//if (intersec)
-	//Sleep(3000);
+		//(3000);
 	//UpdateMap();
 	UpdateCharacter(Delta);
-	
-	/*CBox tileBox = _tile_object->getBounding();
-	CBox characterBox = _character->getBounding();
-	characterBox.vx = characterBox.vx*Delta;
-	characterBox.vy = characterBox.vy*Delta;
+	_itoa_s((int)_map->_list_objects.size(), vyBuffer, 30, 10);
 
-	_itoa_s((int)characterBox.vy, vyBuffer,30, 10);
+	//CBox tileBox (0,1152,32,1152,0.0f,0.0f);
+	//CBox characterBox = _character->getBounding();
+	//characterBox.vx = characterBox.vx;// *Delta;
+	//characterBox.vy = characterBox.vy;// *Delta;
 
-	float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f;
-	DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime);
+	//float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f;
+	//DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime);
 
-	switch (dir)
-	{
-	case DIRECTION::LEFT:
-		lalbelTest = "Left";
-		intersec = true;
-		break;
-	case DIRECTION::RIGHT:
-		lalbelTest = "Right";
-		intersec = true;
-		break;
-	case DIRECTION::TOP:
-		lalbelTest = "Top";
-		intersec = true;
-		break;
-	case DIRECTION::BOTTOM:
-		lalbelTest = "Bottom";
-		intersec = true;
-		break;
-	default:
-		lalbelTest = "None";
-		intersec = false;
-		break;
-	}*/
-	
+	//switch (dir)
+	//{
+	//case DIRECTION::LEFT:
+	//	lalbelTest = "Left";
+	//	intersec = true;
+	//	_character->setPosition(tileBox.x - _character->getWidth() - 2, _character->getPosition().y);
+	//	_character->setVelocity(0, 0);
+	//	break;
+	//case DIRECTION::RIGHT:
+	//	lalbelTest = "Right";
+	//	intersec = true;
+	//	_character->setPosition(tileBox.w + tileBox.x + 2, _character->getPosition().y);
+	//	_character->setVelocity(0, 0);
+	//	break;
+	//case DIRECTION::TOP:
+	//	lalbelTest = "Top";
+	//	intersec = true;
+	//	_character->setPosition(_character->getPosition().x, tileBox.y + _character->getHeight() + 2);
+	//	_character->setVelocity(0, 0);
+	//	break;
+	//case DIRECTION::BOTTOM:
+	//	lalbelTest = "Bottom";
+	//	intersec = true;
+	//	_character->setPosition(_character->getPosition().x, tileBox.y - tileBox.h - 2);
+	//	_character->setVelocity(0, 0);
+	//	break;
+	//default:
+	//	lalbelTest = "None";
+	//	intersec = false;
+	//	break;
+	//}
+
+
+	for (int i = 0; i < _map->_list_objects.size(); i++){
+		CBox tileBox = _map->_list_objects.at(i)->getBounding();
+		CBox characterBox = _character->getBounding();
+		//characterBox.vx = characterBox.vx;// *Delta;
+		//characterBox.vy = characterBox.vy;// *Delta;
+
+		float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f;
+		DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime);
+
+		switch (dir)
+		{
+		case DIRECTION::LEFT:
+			lalbelTest = "Left";
+			intersec = true;
+			_character->setPosition(tileBox.x - _character->getWidth() - 2, _character->getPosition().y);
+			_character->setVelocity(0, 0);
+			break;
+		case DIRECTION::RIGHT:
+			lalbelTest = "Right";
+			intersec = true;
+			_character->setPosition(tileBox.w + tileBox.x +2 , _character->getPosition().y);
+			_character->setVelocity(0, 0);
+			break;
+		case DIRECTION::TOP:
+			lalbelTest = "Top";
+			intersec = true;
+			_character->setPosition(_character->getPosition().x, tileBox.y + _character->getHeight()+2);
+			_character->setVelocity(0, 0);
+			break;
+		case DIRECTION::BOTTOM:
+			lalbelTest = "Bottom";
+			intersec = true;
+			_character->setPosition(_character->getPosition().x, tileBox.y - tileBox.h - 2);
+			_character->setVelocity(0, 0);
+			break;
+		default:
+			lalbelTest = "None";
+			_character->setVelocity(0, 0);
+			intersec = false;
+			break;
+		}
+	}
 }
 
 
@@ -88,20 +138,19 @@ void CrazyCat::UpdateMap()
 void CrazyCat::UpdateCharacter(int Delta)
 {
 
-	_character->UpdatePosition(Delta);
+	_character->update(Delta);
 
 	RECT from = _Camera->GetViewport();
 
 	int x = _character->getPosition().x - (_screenWidth / 2);
-	//int y = _character->_position_y + (_screenHeight / 2);
-	int y = _Camera->GetPositionCamera().y;
+	int y = _character->getPosition().y + (_screenHeight / 2);
 
 	if (x < 0)
 		x = 0;
 	if (x>(_mapMaxWidth - _screenWidth))
 		x = (_mapMaxWidth - _screenWidth);
-	if (y < _screenHeight)
-		y = _screenHeight;
+	if (y < (_screenHeight - INFO_BAR_HEIGHT))
+		y = (_screenHeight - INFO_BAR_HEIGHT);
 	if (y > _mapMaxHeight)
 		y = _mapMaxHeight;
 	_Camera->SetPositionCamera(D3DXVECTOR2(x, y));
@@ -113,14 +162,14 @@ void CrazyCat::LoadResources(LPDIRECT3DDEVICE9 d3ddv)
 	_textPrint = new CText();
 	_textPrint->Initialize(_directXDivice->getDevice(), TEXT("Times New Roman"), 70, 1);
 	_Camera->SetPositionCamera(D3DXVECTOR2(0, 576));
-	_mapMaxHeight = 576;
-	_mapMaxWidth = 9600;
-	_character = new CCharacter(_directXDivice->getSpriteHandler(), 100, 100, _mapMaxWidth, _mapMaxHeight);
+	_mapMaxHeight = 1152;
+	_mapMaxWidth = 1600;
+	_character = new CCharacter(33, 1000, _mapMaxWidth, _mapMaxHeight);
+	_character->inital(_directXDivice->getSpriteHandler());
 	_tile_object = new CDynamicGameObject(1, 0, 32, 800, 32, 0.0f, 0.0f, _directXDivice->getSpriteHandler(), L"Tile.png", 1, 1);
-
+	_game_bar = LoadSurfaceFromFile(_directXDivice->getDevice(), L"GameBar.png", NULL);
 	_map = new Map();
-	_map->inital(this->_directXDivice->getDevice(), L"BG.png", L"map1_v1.img", L"map1_v1.map", L"map1_v1.info", this->_screenWidth, this->_screenHeight);
-
+	_map->inital(this->_directXDivice->getDevice(), L"map1_tets.img", L"map1_tets.map", L"map1_tets.info", this->_screenWidth, this->_screenHeight - INFO_BAR_HEIGHT);
 }
 
 int CrazyCat::LoadBackground(LPWSTR fileText, LPWSTR fileImage, int rows, int columns, int tiles, int tileWidth, int tileHeight)
@@ -239,15 +288,41 @@ void CrazyCat::RenderFrame(LPDIRECT3DDEVICE9 d3ddv, int t)
 	//last_time = now;
 	//}
 
+	RECT srcRect;
+	srcRect.left = 0;
+	srcRect.right = srcRect.left + _screenWidth;
+	srcRect.top = 0;
+	srcRect.bottom = srcRect.top + INFO_BAR_HEIGHT;
+	_directXDivice->getDevice()->StretchRect(_game_bar, NULL, _directXDivice->getBackBuffer(), &srcRect, D3DTEXF_NONE);
 	_map->render(this->_directXDivice, _Camera->GetPositionCamera());
+
+	
+
+
+	/*for (int i = 0; i < _map->_list_objects.size(); i++){
+		CBox tileBox = _map->_list_objects.at(i)->getBounding();
+		D3DXVECTOR2 ingame(tileBox.x, tileBox.y);
+		CCamera::Transform(_Camera->GetPositionCamera(), &ingame);
+
+		RECT srcRect;
+		srcRect.left = ingame.x;
+		srcRect.right = srcRect.left + tileBox.w;
+		srcRect.top = ingame.y;
+		srcRect.bottom = srcRect.top + tileBox.h;;
+
+		d3ddv->ColorFill(_directXDivice->getBackBuffer(), &srcRect, D3DXCOLOR(0, 255, 255, 0));
+
+	}*/
+
 
 	_directXDivice->getSpriteHandler()->Begin(D3DXSPRITE_ALPHABLEND);
 	//_tile_object->draw(_Camera->GetPositionCamera());
-	_character->RenderCharacter(_Camera->GetPositionCamera());
+	_character->draw(D3DXVECTOR2(_Camera->GetPositionCamera().x, _Camera->GetPositionCamera().y + INFO_BAR_HEIGHT));
 	/*for (int i = 0; i < 300; i++){
 		_mtile->draw(_Camera->GetPositionCamera(), map->_listObject[i].x, map->_listObject[i].y);
 
 	}*/
+
 	_textPrint->Print(vyBuffer, 100, 100, D3DCOLOR_XRGB(0, 0, 0), 0, 0, 0, FA_RIGHT);
 	_textPrint->Print(lalbelTest, 200, 100, D3DCOLOR_XRGB(0, 0, 0), 0, 0, 0, FA_RIGHT);
 	
@@ -329,30 +404,42 @@ void CrazyCat::ProcessInput(LPDIRECT3DDEVICE9 d3ddv, int t)
 {
 	if (_keyboardDevice->IsKeyDown(DIK_RIGHT))
 	{
-		_character->setPosition(_character->getPosition().x + 5, _character->getPosition().y);
+		_character->WalkingRight();
+		//_character->setVelocity(0.5, _character->getVelocity().y);
 		//_character->setVelocity( _character->getVelocity().x + 50, _character->getVelocity().y);
 		//_character->
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_LEFT))
 	{
-		_character->setPosition(_character->getPosition().x - 5, _character->getPosition().y);
+		_character->WalkingLeft();
+		//_character->setVelocity(- 0.5, _character->getVelocity().y);
 		//velocityx = -5;
 		//_character->setVelocity(_character->getVelocity().x - 5, _character->getVelocity().y);
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_UP))
 	{
+		_character->WalkingBehind();
+		//_character->setVelocity(_character->getVelocity().x, +0.5);
 		//velocityy = 5;
 		//_character->setVelocity(_character->getVelocity().x , _character->getVelocity().y +5);
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_DOWN))
 	{
+		_character->WalkingFront();
+		//_character->setVelocity(_character->getVelocity().x, -0.5);
 		//velocityy = -5;
 		//_character->setVelocity(_character->getVelocity().x, _character->getVelocity().y-5);
 		//_character->UpdateCharacterMode(Character_Mode::Slide);
 	}
+	else{
+		_character->MoveNone();
+		//_character->setVelocity(0, 0);
+	}
+	
+	
 	/*else if (_keyboardDevice->IsKeyDown(DIK_UP))
 	{
 	_character->UpdateCharacterMode(Character_Mode::Walk);
@@ -371,7 +458,7 @@ void CrazyCat::OnKeyDown(int KeyCode)
 	{
 	case DIK_SPACE:
 		//_character->UpdateCharacterMode(Character_Mode::Jump);
-		_character->Jumping(_deltaTime);
+		//_character->Jumping(_deltaTime);
 		break;
 	case DIK_D:
 		_character->dead();

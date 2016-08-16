@@ -18,8 +18,15 @@
 class CrazyCat : public CGame
 {
 public:
+
+	// các thông tin logic của nhân vật
+	float	_b_live;					// mạng còn lại
+	int		_b_gold;					// số vàng đang có ~ số điểm
+	float	_b_map_times;				// thời gian còn lại để hoàn thành map
+
 	CCharacter *_character;				// nhân vật: main cat
 	LPDIRECT3DSURFACE9 _background;		// background
+	LPDIRECT3DSURFACE9 _game_bar;		// background
 	RECT _background_partition;			// khung background ứng với viewport hiện tại
 	Map *_map;
 	CText *_textPrint;

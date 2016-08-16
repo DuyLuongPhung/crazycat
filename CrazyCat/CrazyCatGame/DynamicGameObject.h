@@ -17,9 +17,11 @@ public:
 	~CDynamicGameObject();
 
 	void				next();
-	virtual void		inital();
+
+	virtual CBox		getBounding();
+	virtual void		inital(LPD3DXSPRITE sprite_handler);
 	virtual void		draw(D3DXVECTOR2 view_port);
-	virtual void		update();
+	virtual void		update(int deltaTime);
 };
 
 #endif

@@ -24,13 +24,17 @@ void CDynamicGameObject::next()
 		this->_sprite_resource->Next();
 	}
 }
+CBox CDynamicGameObject::getBounding()
+{
+	return CBox(this->_position_x, this->_position_y, this->_width, this->_height, this->_velocity_x, this->_velocity_y);
+}
 
-void CDynamicGameObject::inital()
+void CDynamicGameObject::inital(LPD3DXSPRITE sprite_handler)
 {
 
 }
 
-void CDynamicGameObject::update()
+void CDynamicGameObject::update(int deltaTime)
 {
 
 }
