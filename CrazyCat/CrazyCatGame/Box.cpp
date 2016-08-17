@@ -28,10 +28,7 @@ CBox::CBox(float x, float y, float w, float h){
 
 bool CBox::IsIntersectedWith(CBox box)
 {
-	return (this->x < box.x + box.w
-		&& this->x + this->w > box.x
-		&& this->y < box.y + box.h
-		&& this->y + this->h > box.y);
+	return !(this->x + this->w <= box.x || this->x >= box.x + box.w || this->y - this->h >= box.y || this->y <= box.y - box.h);
 }
 
 RECT CBox::ToRect()

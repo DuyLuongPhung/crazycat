@@ -28,5 +28,6 @@ public:
 
 	// Render current sprite at location (X,Y) at the target surface
 	void Render(D3DXVECTOR2 viewPort, int X, int Y);
+	void Render( int X, int Y);
 };
 #endif

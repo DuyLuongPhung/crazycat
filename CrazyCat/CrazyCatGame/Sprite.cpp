@@ -74,6 +74,28 @@ void CSprite::Render(D3DXVECTOR2 viewPort, int X, int Y)
 		);
 }
 
+void CSprite::Render(int X, int Y)
+{
+	RECT srect;
+
+	D3DXVECTOR2 point(X, Y);
+
+	srect.left = (_Index % _SpritePerRow)*(_Width);
+	srect.top = (_Index / _SpritePerRow)*(_Height);
+	srect.right = srect.left + _Width;
+	srect.bottom = srect.top + _Height;
+
+	D3DXVECTOR3 position((float)point.x, (float)point.y, 0);
+
+	_SpriteHandler->Draw(
+		_Image,
+		&srect,
+		NULL,
+		&position,
+		D3DCOLOR_XRGB(255, 255, 255)
+		);
+}
+
 void CSprite::Next()
 {
 	_Index = (_Index + 1) % _Count;

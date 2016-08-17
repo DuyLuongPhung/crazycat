@@ -14,6 +14,9 @@
 #include "Collision.h"
 #include <time.h>
 #include <d3dx9.h>
+#include "GameMenu.h"
+#include "FireBang.h"
+
 
 class CrazyCat : public CGame
 {
@@ -35,6 +38,10 @@ public:
 
 
 	char * lalbelTest;
+	std::vector<Bomb*> _list_bombs;
+	std::vector<FireBang*> _list_fireBang;
+
+	GameMenu * _menu;
 
 public:
 	CrazyCat(HINSTANCE hInstance, LPWSTR name, int mode, int is_fullscreen, int frame_rate);
@@ -53,6 +60,7 @@ private:
 	int LoadBackground(LPWSTR fileText, LPWSTR fileImage, int rows, int columns, int tiles, int tileWidth, int tileHeight);
 	void UpdateCharacter(int Delta);
 	void UpdateMap();
+	void AddBomb();
 };
 
 #endif

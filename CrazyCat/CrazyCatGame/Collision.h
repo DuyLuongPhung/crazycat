@@ -5,17 +5,7 @@
 #include <algorithm>
 #include <Windows.h>
 #include <d3dx9.h>
-#include "Box.h"
-
-enum DIRECTION
-{
-	NONE = 0,
-	NONE_CAN,	// có khả năng xảy ra va chạm
-	LEFT,
-	RIGHT,
-	TOP,
-	BOTTOM
-};
+#include "SweptAABB.h"
 
 class CCollision
 {
@@ -23,7 +13,7 @@ class CCollision
 
 public:
 	CCollision();
-	DIRECTION isCollision(CBox box1, CBox box2, float &collisionTime);
+	DIRECTION isCollision(CBox box1, CBox box2, float &collisionTime, float &offsetX, float &offsetY);
 	D3DXVECTOR2		getVelocity(){ return velocity; };
 	~CCollision();
 };
