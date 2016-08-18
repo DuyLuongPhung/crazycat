@@ -55,5 +55,4 @@ void CGameObject::update(int deltaTime)
 
 void CGameObject::draw(D3DXVECTOR2 view_port)
 {
-	//m_Sprite->Render(m_Position.x, m_Position.y);
 }

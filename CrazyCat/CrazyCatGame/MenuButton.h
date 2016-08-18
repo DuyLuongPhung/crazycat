@@ -24,6 +24,6 @@ public:
 	void leaving(){ this->_is_moving = false; }
 	void select(){ this->_is_selected = true; }
 
-	void draw(){ this->_b_sprite->Render(_x, _y); }
+	void draw();
 };
 

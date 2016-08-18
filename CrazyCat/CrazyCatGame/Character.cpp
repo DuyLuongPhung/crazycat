@@ -1,7 +1,7 @@
 ﻿#include "Character.h"
 
 
-CCharacter::CCharacter(int start_x, int start_y, int mapWidth, int mapHeight)
+CCharacter::CCharacter(int start_x, int start_y)
 {
 	this->_position_x = start_x;
 	this->_position_y = start_y;
@@ -9,8 +9,6 @@ CCharacter::CCharacter(int start_x, int start_y, int mapWidth, int mapHeight)
 	this->_velocity_y = 0;
 	this->_width = BOMBER_WIDTH;
 	this->_height = BOMBER_HEIGHT;
-	this->_mapHeight = mapHeight;
-	this->_mapWidth = mapWidth;
 	this->_now_states = Move_States::Walking_Left;
 	this->_last_states = this->_now_states;
 
@@ -22,10 +20,10 @@ CCharacter::CCharacter(int start_x, int start_y, int mapWidth, int mapHeight)
 
 CCharacter::~CCharacter()
 {
-	/*SAFE_DELETE(this->_walking_right);
+	SAFE_DELETE(this->_walking_right);
 	SAFE_DELETE(this->_walking_left);
 	SAFE_DELETE(this->_walking_front);
-	SAFE_DELETE(this->_walking_behind);*/
+	SAFE_DELETE(this->_walking_behind);
 }
 
 void CCharacter::inital(LPD3DXSPRITE spriteHandler)

@@ -1,4 +1,7 @@
 
+#ifndef GAME_H
+#define GAME_H
+
 #include <windows.h>
 #include <d3d9.h>
 #include <dinput.h>
@@ -20,9 +23,7 @@ protected:
 	// directx divice
 	CDirectX *_directXDivice;
 	CKeyboard *_keyboardDevice;
-
-	// camera
-	CCamera *_Camera;
+	bool _is_exit;
 
 	// game information
 	DWORD _deltaTime;		// Time between the last frame and current frame
@@ -64,3 +65,5 @@ public:
 	void Init();
 	void Run();
 };
+
+#endif

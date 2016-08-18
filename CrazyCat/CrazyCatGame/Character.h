@@ -1,4 +1,7 @@
 ﻿
+#ifndef CHARACTER_H
+#define CHARACTER_H
+
 #include "Sprite.h"
 #include "Camera.h"
 #include "Collision.h"
@@ -10,9 +13,7 @@
 class CCharacter : public CDynamicGameObject
 {
 public:
-	DWORD _last_time;		
-	int _mapWidth;
-	int _mapHeight;
+	DWORD _last_time;	
 
 	bool _is_dead;			// đã chết
 	int _deadDrawCount;		// đếm số lần vẽ sprite khi chết
@@ -30,7 +31,7 @@ public:
 
 
 public:
-	CCharacter(int start_x, int start_y, int mapWidth, int mapHeight);
+	CCharacter(int start_x, int start_y);
 	~CCharacter();
 
 	// các hành động của bomber
@@ -52,3 +53,4 @@ private:
 	void UpdatePosition(int deltaTime);
 };
 
+#endif

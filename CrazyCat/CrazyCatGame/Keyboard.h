@@ -1,3 +1,7 @@
+
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
+
 #include <dinput.h>
 
 #define KEYBOARD_BUFFER_SIZE	1024
@@ -21,4 +25,6 @@ public:
 	void InitKeyboard();
 	int IsKeyDown(int KeyCode);
 };
+
+#endif
 

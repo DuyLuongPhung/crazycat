@@ -54,33 +54,41 @@ struct QNodeObjects{
 	int y;
 };
 
-
-
 class Map
 {
-public:
+private:
 	LPDIRECT3DSURFACE9 _m_background;			// màn hình nền
 
-	int _screen_height;							// chiều cao màn hình cho in map và nhân vật, không tính thanh bar
-	int _screen_width;							// chiều rộng màn hình cho in map và nhân vật, không tính thanh bar
-	int _m_width;								// chiều rộng của map 
-	int _m_height;								// chiều cao của map
-	//CBox* _listObject;							// Các đối tượng trong map
-	//CQuadTree * _m_quad_object;					// quad tree
+	char *		_m_title;						// Tiêu đề map
+	int			_m_width;						// chiều rộng của map 
+	int			_m_height;						// chiều cao của map
+	DWORD		_m_maximum_times;				// thời gian tối đa cho map này
 
-	std::vector<CGameObject*> _list_objects;
-	
+	// Thông tin sẽ map được dùng để khởi tạo 
+	LPWSTR		_m_tile_img;					// file ảnh nền gốc			
+	LPWSTR		_m_tile_txt;					// file thông tin ma trận để load ảnh nền
+	LPWSTR		_m_object_info;					// file thông tin map: thông tin cơ bản, quadtree, objects
 public:
-	Map();
+	std::vector<CGameObject*> _list_objects;	// danh sách các objects trong map
+
+public:
+	Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPath, DWORD mapTimes);
 	~Map();
 
-	void inital(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt, 
-		LPWSTR objectPath, int scrWidth, int scrHeight);
-	void render(CDirectX * directX, D3DXVECTOR2 viewPort);
+	DWORD			getMaximumTimes(){ return this->_m_maximum_times; }
+	int				getMapWidth(){ return this->_m_width; }
+	int				getMapHeight(){ return this->_m_height; }
+	char*			getMapTitle(){ return this->_m_title; }
+	void			addNewObjects(CGameObject * insertObject);
+
+	void			inital(LPDIRECT3DDEVICE9 d3ddev);
+	void			update(int deltaTime, D3DXVECTOR2 nextViewPort);
+	void			draw(CDirectX * directX, D3DXVECTOR2 viewPort, int gamesceneWidth, int gamesceneHeight);
+
 private:
-	void readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt,
-		int &mapWidth, int &mapHeight);
-	void readMapObjects(LPWSTR mapInfoPath);
-	
+	void			readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt,
+					int &mapWidth, int &mapHeight);
+	void			readMapObjects(LPWSTR mapInfoPath);
+
 };
 

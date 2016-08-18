@@ -10,545 +10,128 @@
 CrazyCat::CrazyCat(HINSTANCE hInstance, LPWSTR name, int mode, int is_fullscreen, int frame_rate) :
 CGame(hInstance, name, mode, is_fullscreen, frame_rate)
 {
-	_character = NULL;
-	_collision = new CCollision();
+	this->_g_currrent_mode = GAME_MODE::PlayMenu;
+	this->_g_helpmgt = NULL;
+	this->_g_mapmgt = NULL;
+	this->_g_menu = NULL;
 }
-char * vyBuffer = new char[30];
+
 
 CrazyCat::~CrazyCat()
 {
-	SAFE_DELETE(this->_character);
-	SAFE_DELETE(this->_collision);
-	SAFE_DELETE(this->_textPrint);
-	SAFE_DELETE(this->_map);
+	SAFE_DELETE(this->_g_helpmgt);
+	SAFE_DELETE(this->_g_mapmgt);
+	SAFE_DELETE(this->_g_menu);
 }
 bool intersec = false;
-void CrazyCat::Update(int Delta)
+void CrazyCat::Update(int delta)
 {
-	//if (intersec)
-	//(3000);
-	//UpdateMap();
-	//UpdateCharacter(Delta);
-	//_itoa_s((int)_map->_list_objects.size(), vyBuffer, 30, 10);
-
-
-
-	//for (int i = 0; i < _list_bombs.size(); i++){
-	//	if (_list_bombs[i]->IsFired()){
-	//		// ad fire
-	//		FireBang* leftFirebang = new FireBang(100, _list_bombs[i]->getPosition().x - BOMB_WIDTH + 2,
-	//			_list_bombs[i]->getPosition().y,
-	//			_list_bombs[i]->getWidth(), _list_bombs[i]->getHeight(), _directXDivice->getSpriteHandler(),
-	//			FIRE_BANG_LEFT, 3, 3);
-	//		leftFirebang->inital(_directXDivice->getSpriteHandler());
-	//		_list_fireBang.push_back(leftFirebang);
-	//		FireBang* rightFirebang = new FireBang(100, _list_bombs[i]->getPosition().x + BOMB_WIDTH - 2,
-	//			_list_bombs[i]->getPosition().y,
-	//			_list_bombs[i]->getWidth(), _list_bombs[i]->getHeight(), _directXDivice->getSpriteHandler(),
-	//			FIRE_BANG_RIGHT, 3, 3);
-	//		rightFirebang->inital(_directXDivice->getSpriteHandler());
-	//		_list_fireBang.push_back(rightFirebang);
-	//		FireBang* topFirebang = new FireBang(100, _list_bombs[i]->getPosition().x,
-	//			_list_bombs[i]->getPosition().y + BOMB_HEIGHT - 2,
-	//			_list_bombs[i]->getWidth(), _list_bombs[i]->getHeight(), _directXDivice->getSpriteHandler(),
-	//			FIRE_BANG_TOP, 3, 3);
-	//		topFirebang->inital(_directXDivice->getSpriteHandler());
-	//		_list_fireBang.push_back(topFirebang);
-	//		FireBang* bottomFirebang = new FireBang(100, _list_bombs[i]->getPosition().x,
-	//			_list_bombs[i]->getPosition().y - BOMB_HEIGHT + 2,
-	//			_list_bombs[i]->getWidth(), _list_bombs[i]->getHeight(), _directXDivice->getSpriteHandler(),
-	//			FIRE_BANG_BOTTOM, 3, 3);
-	//		bottomFirebang->inital(_directXDivice->getSpriteHandler());
-	//		_list_fireBang.push_back(bottomFirebang);
-
-	//		_list_bombs.erase(_list_bombs.begin() + i--);
-	//		continue;
-	//	}
-	//	_list_bombs[i]->update(Delta);
-	//}
-
-	//for (int i = 0; i < _list_fireBang.size(); i++){
-	//	if (_list_fireBang[i]->isFiredBang()){
-	//		_list_fireBang.erase(_list_fireBang.begin() + i--);
-	//		continue;
-	//	}
-	//	bool flag = false;
-	//	for (int j = 0; j < _map->_list_objects.size(); j++){
-	//		CBox tileBox1 = _map->_list_objects.at(j)->getBounding();
-	//		CBox tileBox2 = _list_fireBang.at(i)->getBounding();
-	//		if (tileBox1.IsIntersectedWith(tileBox2)){
-	//			_list_fireBang.erase(_list_fireBang.begin() + i--);
-	//			flag = true;
-	//			break;
-	//		}
-	//	}
-	//	if (!flag)
-	//		_list_fireBang[i]->update(Delta);
-	//}
-
-	//CBox tileBox (0,1152,32,1152,0.0f,0.0f);
-	//CBox characterBox = _character->getBounding();
-	//characterBox.vx = characterBox.vx;// *Delta;
-	//characterBox.vy = characterBox.vy;// *Delta;
-
-	//float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f;
-	//DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime);
-
-	//switch (dir)
-	//{
-	//case DIRECTION::LEFT:
-	//	lalbelTest = "Left";
-	//	intersec = true;
-	//	_character->setPosition(tileBox.x - _character->getWidth() - 2, _character->getPosition().y);
-	//	_character->setVelocity(0, 0);
-	//	break;
-	//case DIRECTION::RIGHT:
-	//	lalbelTest = "Right";
-	//	intersec = true;
-	//	_character->setPosition(tileBox.w + tileBox.x + 2, _character->getPosition().y);
-	//	_character->setVelocity(0, 0);
-	//	break;
-	//case DIRECTION::TOP:
-	//	lalbelTest = "Top";
-	//	intersec = true;
-	//	_character->setPosition(_character->getPosition().x, tileBox.y + _character->getHeight() + 2);
-	//	_character->setVelocity(0, 0);
-	//	break;
-	//case DIRECTION::BOTTOM:
-	//	lalbelTest = "Bottom";
-	//	intersec = true;
-	//	_character->setPosition(_character->getPosition().x, tileBox.y - tileBox.h - 2);
-	//	_character->setVelocity(0, 0);
-	//	break;
-	//default:
-	//	lalbelTest = "None";
-	//	intersec = false;
-	//	break;
-	//}
-
-
-	//for (int i = 0; i < _map->_list_objects.size(); i++){
-	//	CBox tileBox = _map->_list_objects.at(i)->getBounding();
-	//	CBox characterBox = _character->getBounding();
-	//	//characterBox.vx = characterBox.vx;// *Delta;
-	//	//characterBox.vy = characterBox.vy;// *Delta;
-
-	//	float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
-	//	DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
-
-	//	switch (dir)
-	//	{
-	//	case DIRECTION::LEFT:
-	//		lalbelTest = "Left";
-	//		intersec = true;
-	//		_character->setPosition(tileBox.x - _character->getWidth() - 2, _character->getPosition().y);
-	//		_character->setVelocity(0, 0);
-	//		break;
-	//	case DIRECTION::RIGHT:
-	//		lalbelTest = "Right";
-	//		intersec = true;
-	//		_character->setPosition(tileBox.w + tileBox.x + 2, _character->getPosition().y);
-	//		_character->setVelocity(0, 0);
-	//		break;
-	//	case DIRECTION::TOP:
-	//		lalbelTest = "Top";
-	//		intersec = true;
-	//		_character->setPosition(_character->getPosition().x, tileBox.y + _character->getHeight() + 2);
-	//		_character->setVelocity(0, 0);
-	//		break;
-	//	case DIRECTION::BOTTOM:
-	//		lalbelTest = "Bottom";
-	//		intersec = true;
-	//		_character->setPosition(_character->getPosition().x, tileBox.y - tileBox.h - 2);
-	//		_character->setVelocity(0, 0);
-	//		break;
-	//	default:
-	//		lalbelTest = "None";
-	//		_character->setVelocity(0, 0);
-	//		intersec = false;
-	//		break;
-	//	}
-	//}
-}
-
-void CrazyCat::UpdateMap()
-{
-	// update background
-	RECT from = _Camera->GetViewport();
-	D3DXVECTOR2 realPosition(from.left, from.top);
-	_Camera->InTransform(D3DXVECTOR2(0, _mapMaxHeight), &realPosition);
-
-	_background_partition.left = realPosition.x;
-	_background_partition.top = realPosition.y;
-	_background_partition.right = _background_partition.left + _screenWidth;
-	_background_partition.bottom = _background_partition.top + _screenHeight;
-
-	// update object
-	/**
-	comming soon
-	*/
-}
-
-void CrazyCat::UpdateCharacter(int Delta)
-{
-
-	_character->update(Delta);
-
-	RECT from = _Camera->GetViewport();
-
-	int x = _character->getPosition().x - (_screenWidth / 2);
-	int y = _character->getPosition().y + (_screenHeight / 2);
-
-	if (x < 0)
-		x = 0;
-	if (x>(_mapMaxWidth - _screenWidth))
-		x = (_mapMaxWidth - _screenWidth);
-	if (y < (_screenHeight - INFO_BAR_HEIGHT))
-		y = (_screenHeight - INFO_BAR_HEIGHT);
-	if (y > _mapMaxHeight)
-		y = _mapMaxHeight;
-	_Camera->SetPositionCamera(D3DXVECTOR2(x, y));
+	if (this->_g_currrent_mode == GAME_MODE::PlayMap){
+		this->_g_mapmgt->update(delta, this->_directXDivice);
+	}
 }
 
 void CrazyCat::LoadResources(LPDIRECT3DDEVICE9 d3ddv)
 {
-	_menu = new GameMenu(_directXDivice->getDevice(), 100, 10, 320, 416, 4, L"GameMenu_bg.png");
-	_menu->initalStartMenu(_directXDivice->getSpriteHandler());
+	this->_g_helpmgt = new HelpMgt(this->_directXDivice->getDevice(), L"Help.png");
 
-	//LoadBackground(MAP_TEXT_FILE, MAP_IMG_FILE, 41, 176, 95, 16, 16);
-	/*_textPrint = new CText();
-	_textPrint->Initialize(_directXDivice->getDevice(), TEXT("Times New Roman"), 70, 1);
-	_Camera->SetPositionCamera(D3DXVECTOR2(0, 576));
-	_mapMaxHeight = 704;
-	_mapMaxWidth = 1024;
-	_character = new CCharacter(100, 60, _mapMaxWidth, _mapMaxHeight);
-	_character->inital(_directXDivice->getSpriteHandler());
-	_tile_object = new CDynamicGameObject(1, 0, 32, 800, 32, 0.0f, 0.0f, _directXDivice->getSpriteHandler(), L"Tile.png", 1, 1);
-	_game_bar = LoadSurfaceFromFile(_directXDivice->getDevice(), L"GameBar.png", NULL);
-	_map = new Map();
-	_map->inital(this->_directXDivice->getDevice(), L"map1.img", L"map1.map", L"map1.info", this->_screenWidth, this->_screenHeight - INFO_BAR_HEIGHT);*/
-}
+	this->_g_menu = new GameMenu(this->_directXDivice->getDevice(), 32, 10, 320, 416, 4, L"GameMenu_bg.png");
+	this->_g_menu->initalPauseMenu(this->_directXDivice->getSpriteHandler());
 
-int CrazyCat::LoadBackground(LPWSTR fileText, LPWSTR fileImage, int rows, int columns, int tiles, int tileWidth, int tileHeight)
-{
-	_textPrint = new CText();
-	_textPrint->Initialize(_directXDivice->getDevice(), TEXT("Times New Roman"), 70, 1);
-	//map = new Map();
-	//_map = new Map(800, 576, 9600, 576);
-	//_map->inital(_directXDivice->getDevice());
-	//LPDIRECT3DSURFACE9 tile = LoadSurfaceFromFile(_directXDivice->getDevice(), L"Tile.png", D3DCOLOR_XRGB(255, 0, 255));
-
-	//MapTiles *_tilesItem;
-	//int **_tilesMatrix;
-	//_tilesItem = new MapTiles[tiles];		// khởi tạo mảng với số lượng : tiles
-	//_tilesMatrix = new int *[rows];		// khởi tạo ma trận với số dòng: rows
-	//for (int i = 0; i < rows; i++)
-	//{
-	//	_tilesMatrix[i] = new int[columns];		// khởi tạo dòng ma trận với số cột: columns
-	//}
-	//ReadMapText(fileText, _tilesItem, _tilesMatrix, columns);
-	//_mapMaxHeight = tileHeight*rows;
-	//_mapMaxWidth = tileWidth*columns;
+	this->_g_mapmgt = new PlayMapMgt();
+	this->_g_mapmgt->inital(this->_directXDivice, this->_screenWidth, this->_screenHeight);
 
 
-	//MapTest = new int*[25];
-	//for (int i = 0; i < 25; i++)
-	//{
-	//	MapTest[i] = new int[150];		// khởi tạo dòng ma trận với số cột: columns
-	//}
-	//ReadMap(L"Map.txt", MapTest);
-
-	//LPDIRECT3DSURFACE9 desImage = LoadSurfaceFromFile(_directXDivice->getDevice(), fileImage, D3DCOLOR_XRGB(255, 0, 255));
-	/*HRESULT result;
-	LPDIRECT3DSURFACE9 surface = NULL;
-	result = _directXDivice->getDevice()->CreateOffscreenPlainSurface(tileWidth * columns, tileHeight * rows, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
-	if (result != D3D_OK)
-	return NULL;
-	for (int i = 0; i < rows; i++)
-	{
-	for (int j = 0; j < columns; j++)
-	{
-	RECT from, to;
-	from.left = _tilesItem[_tilesMatrix[i][j]]._x;
-	from.top = _tilesItem[_tilesMatrix[i][j]]._y;
-	from.right = from.left + tileWidth;
-	from.bottom = from.top + tileHeight;
-
-	to.left = j*tileWidth;
-	to.top = i*tileHeight;
-	to.right = to.left + tileWidth;
-	to.bottom = to.top + tileHeight;
-
-	_directXDivice->getDevice()->StretchRect(desImage, &from, surface, &to, D3DTEXF_NONE);
-	}
-	}*/
-	//_background = tile;
-	//_tile = tile;
-	return 1;
 }
 
 void CrazyCat::RenderFrame(LPDIRECT3DDEVICE9 d3ddv, int t)
 {
-	/*if (mode != -1 && mode != 4){
-		Sleep(1000);
-		}*/
 	CGame::RenderFrame(d3ddv, t);
-
-	// Render background
-	//d3ddv->StretchRect(
-	//	_background,			// from 
-	//	NULL,//&_background_partition,				// which portion?
-	//	_directXDivice->getBackBuffer(),		// to 
-	//	NULL,				// which portion?
-	//	D3DTEXF_NONE);
-	//map->draw(_directXDivice, this->_Camera->GetPositionCamera());
-
-	//D3DXVECTOR2 pos =  _Camera->GetPositionCamera();
-	//RECT src;
-	//src.top = 544;
-	//src.bottom = 576;
-	//src.left = 0;
-	//src.right = src.left + 800;
-
-	////D3DXVECTOR2 posDes(pos.x + 100,pos.y - 200);
-	////CCamera::Transform(_Camera->GetPositionCamera(), &posDes);
-	//RECT des;
-	//des.top = 300;
-	//des.bottom = 332;
-	//des.left = 0;
-	//des.right = des.left + 800;
-	//d3ddv->StretchRect(
-	//					_tile,			// from 
-	//					&src,//&_background_partition,				// which portion?
-	//					_directXDivice->getBackBuffer(),		// to 
-	//					&des,				// which portion?
-	//					D3DTEXF_NONE);
-
-
-
-
-	//wsprintfW(buffer, L"%d", (int)_character->_freeFallingTime);
-	//_directXDivice->DrawString(100, 100, D3DCOLOR_XRGB(0, 0, 0), buffer);
-	/*wsprintfW(buffer, L"%d", (int)_character->realDeltaTime);
-	_directXDivice->DrawString(100, 50, D3DCOLOR_XRGB(0, 0, 0), buffer);*/
-
-	/*if (now - last_time > 1000 / ANIMATE_RATE)
-	{*/
-	/*if (mode == 0)
-	_directXDivice->DrawString(100, 100, D3DCOLOR_XRGB(0, 0, 0), L"NONE");
-	if (mode == 1)
-	_directXDivice->DrawString(100, 100, D3DCOLOR_XRGB(0, 0, 0), L"RIGHT");
-	if (mode == 2)
-	_directXDivice->DrawString(100, 100, D3DCOLOR_XRGB(0, 0, 0), L"LEFT");
-	if (mode == 3)
-	_directXDivice->DrawString(100, 100, D3DCOLOR_XRGB(0, 0, 0), L"SPACE");*/
-	//last_time = now;
-	//}
-
-	/*RECT srcRect;
-	srcRect.left = 0;
-	srcRect.right = srcRect.left + _screenWidth;
-	srcRect.top = 0;
-	srcRect.bottom = srcRect.top + INFO_BAR_HEIGHT;
-	_directXDivice->getDevice()->StretchRect(_game_bar, NULL, _directXDivice->getBackBuffer(), &srcRect, D3DTEXF_NONE);
-	_map->render(this->_directXDivice, _Camera->GetPositionCamera());*/
-
-
-
-
-	/*for (int i = 0; i < _map->_list_objects.size(); i++){
-		CBox tileBox = _map->_list_objects.at(i)->getBounding();
-		D3DXVECTOR2 ingame(tileBox.x, tileBox.y);
-		CCamera::Transform(_Camera->GetPositionCamera(), &ingame);
-
-		RECT srcRect;
-		srcRect.left = ingame.x;
-		srcRect.right = srcRect.left + tileBox.w;
-		srcRect.top = ingame.y;
-		srcRect.bottom = srcRect.top + tileBox.h;;
-
-		d3ddv->ColorFill(_directXDivice->getBackBuffer(), &srcRect, D3DXCOLOR(0, 255, 255, 0));
-
-		}*/
-
-
-	_directXDivice->getSpriteHandler()->Begin(D3DXSPRITE_ALPHABLEND);
-
-	_menu->draw(_directXDivice);
-	//for (int i = 0; i < _list_bombs.size(); i++){
-	//	_list_bombs[i]->draw(D3DXVECTOR2(_Camera->GetPositionCamera().x, _Camera->GetPositionCamera().y + INFO_BAR_HEIGHT));
-	//}
-
-	//for (int i = 0; i < _list_fireBang.size(); i++){
-	//	_list_fireBang[i]->draw(D3DXVECTOR2(_Camera->GetPositionCamera().x, _Camera->GetPositionCamera().y + INFO_BAR_HEIGHT));
-	//}
-	////_tile_object->draw(_Camera->GetPositionCamera());
-	//_character->draw(D3DXVECTOR2(_Camera->GetPositionCamera().x, _Camera->GetPositionCamera().y + INFO_BAR_HEIGHT));
-	///*for (int i = 0; i < 300; i++){
-	//	_mtile->draw(_Camera->GetPositionCamera(), map->_listObject[i].x, map->_listObject[i].y);
-
-	//	}*/
-
-	//_textPrint->Print(vyBuffer, 100, 100, D3DCOLOR_XRGB(0, 0, 0), 0, 0, 0, FA_RIGHT);
-	//_textPrint->Print(lalbelTest, 200, 100, D3DCOLOR_XRGB(0, 0, 0), 0, 0, 0, FA_RIGHT);
-
-	_directXDivice->getSpriteHandler()->End();
-
-	/*AutoBall_x += 1; if (AutoBall_x > 500){
-	AutoBall_x = 0;
-	}*/
-
-
-
-
-	/*Ball_x += velocityx;
-	Ball_y += velocityy;
-
-	CBox ball(Ball_x, Ball_y, 128, 128, velocityx, velocityy);
-	CBox AutoBall(AutoBall_x, AutoBall_y, 80, 40, 0, 0);
-
-	RECT inRect;
-	inRect.left = Ball_x;
-	inRect.right = inRect.left + 128;
-	inRect.top = 576-Ball_y;
-	inRect.bottom = inRect.top + 128;
-
-	RECT autob;
-	autob.left = AutoBall_x;
-	autob.right = autob.left+80;
-	autob.top = 576-AutoBall_y;
-	autob.bottom = autob.top+40;
-
-
-	d3ddv->ColorFill(_directXDivice->getBackBuffer(), &inRect, D3DCOLOR_ARGB(0, 255, 0, 0));
-	d3ddv->ColorFill(_directXDivice->getBackBuffer(), &autob, D3DCOLOR_ARGB(0, 255, 0, 255));
-
-
-	float collisionTime = 0.0f;
-	DIRECTION direction = DIRECTION::NONE;
-	char* label;
-	char* labelI;
-	if (CCollision::Intersec(ball, AutoBall)){
-	labelI = "Intersec";
+	if (_g_currrent_mode == GAME_MODE::PlayMenu){
+		_g_menu->draw(this->_directXDivice);
 	}
-	else
-	{
-	labelI = "None Intersec";
+	else if (_g_currrent_mode == GAME_MODE::PlayHelp){
+		_g_helpmgt->draw(this->_directXDivice);
 	}
-
-	if (CCollision::isCollision(ball, AutoBall,collisionTime,direction)){
-
-	switch (direction)
-	{
-	case 1:
-	label = "LEFT";
-	break;
-	case 3:
-	label = "RIGHT";
-	break;
-	case 2:
-	label = "TOP";
-	break;
-	case 4:
-	label = "BOTTOM";
-	break;
-	default:
-	label = "Không Xác Định Hướng";
-	break;
+	else if (_g_currrent_mode == GAME_MODE::PlayMap){
+		_directXDivice->getSpriteHandler()->Begin(D3DXSPRITE_ALPHABLEND);
+		this->_g_mapmgt->draw(this->_directXDivice);
+		_directXDivice->getSpriteHandler()->End();
 	}
-	mode = 1;
-	}
-	else{
-	mode = -1;
-	label = "Không xảy ra va chạm";
-	}
-	_textPrint->Print(label, 200, 100, D3DCOLOR_XRGB(0, 0, 0), 0, 0, 0, FA_RIGHT);
-	_textPrint->Print(labelI, 200, 200, D3DCOLOR_XRGB(0, 0, 0), 0, 0, 0, FA_RIGHT);*/
 }
 
 void CrazyCat::ProcessInput(LPDIRECT3DDEVICE9 d3ddv, int t)
 {
 	if (_keyboardDevice->IsKeyDown(DIK_RIGHT))
 	{
-		//_character->WalkingRight();
-		//_character->setVelocity(0.5, _character->getVelocity().y);
-		//_character->setVelocity( _character->getVelocity().x + 50, _character->getVelocity().y);
-		//_character->
-		//_character->UpdateCharacterMode(Character_Mode::Slide);
+		this->_g_mapmgt->bomberRunRight();
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_LEFT))
 	{
-		//_character->WalkingLeft();
-		//_character->setVelocity(- 0.5, _character->getVelocity().y);
-		//velocityx = -5;
-		//_character->setVelocity(_character->getVelocity().x - 5, _character->getVelocity().y);
-		//_character->UpdateCharacterMode(Character_Mode::Slide);
+		this->_g_mapmgt->bomberRunLeft();
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_UP))
 	{
-		_menu->preButton();
-		//_character->WalkingBehind();
-		//_character->setVelocity(_character->getVelocity().x, +0.5);
-		//velocityy = 5;
-		//_character->setVelocity(_character->getVelocity().x , _character->getVelocity().y +5);
-		//_character->UpdateCharacterMode(Character_Mode::Slide);
+		this->_g_mapmgt->bomberRunBehind();
 	}
 	else if (_keyboardDevice->IsKeyDown(DIK_DOWN))
 	{
-		_menu->nextButton();
-		//_character->WalkingFront();
-		//_character->setVelocity(_character->getVelocity().x, -0.5);
-		//velocityy = -5;
-		//_character->setVelocity(_character->getVelocity().x, _character->getVelocity().y-5);
-		//_character->UpdateCharacterMode(Character_Mode::Slide);
+		this->_g_mapmgt->bomberRunFront();
 	}
 	else{
-		//_character->MoveNone();
-		//_character->setVelocity(0, 0);
+		this->_g_mapmgt->bomberMoveNone();
 	}
-
-
-	/*else if (_keyboardDevice->IsKeyDown(DIK_UP))
-	{
-	_character->UpdateCharacterMode(Character_Mode::Walk);
-	}
-	else if (_keyboardDevice->IsKeyDown(DIK_LEFT))
-	{
-	_character->UpdateCharacterMode(Character_Mode::Dead);
-	}
-	else
-	_character->UpdateCharacterMode(Character_Mode::Run);*/
 }
 
 void CrazyCat::OnKeyDown(int KeyCode)
 {
+
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		//AddBomb();
-		//_character->UpdateCharacterMode(Character_Mode::Jump);
-		//_character->Jumping(_deltaTime);
+	{
+		if (_g_currrent_mode == GAME_MODE::PlayMenu)
+		{
+			if (_g_menu->getCurrentButtonId() == HELP_BUTTON_ID)
+			{
+				_g_currrent_mode = GAME_MODE::PlayHelp;
+			}
+			else if (_g_menu->getCurrentButtonId() == EXIT_BUTTON_ID){
+				this->_is_exit = true;
+			}
+			else{
+				_g_currrent_mode = GAME_MODE::PlayMap;
+			}
+		}
+		else if (_g_currrent_mode == GAME_MODE::PlayMap){
+			this->AddBomb();
+		}
 		break;
-	case DIK_D:
-		//_character->Dead();
+	}
+	case DIK_UP:
+		if (_g_currrent_mode == GAME_MODE::PlayMenu)
+			_g_menu->preButton();
 		break;
-	case DIK_H:
-		//_character->_isHurt = true;
-		//_character->_hurtDrawCount = 0;
-		//_character->UpdateCharacterMode(Character_Mode::Hurt);
+	case DIK_DOWN:
+		if (_g_currrent_mode == GAME_MODE::PlayMenu)
+			_g_menu->nextButton();
 		break;
-	case DIK_C:
-		////if (_character->_mode == Character_Mode::Run)
-		//	_character->UpdateCharacterMode(Character_Mode::Slide);
-		//else if (_character->_mode == Character_Mode::Slide)
-		//	_character->UpdateCharacterMode(Character_Mode::Walk);
-		//else if (_character->_mode == Character_Mode::Walk)
-		//	_character->UpdateCharacterMode(Character_Mode::Run);
-		//else
-		//	_character->UpdateCharacterMode(Character_Mode::Run);
-		//_character->_isDead = false;
-		//_character->_deadDrawCount = 0;
+	case DIK_TAB:
+	{
+		if (_g_currrent_mode == GAME_MODE::PlayHelp)
+		{
+			_g_currrent_mode = GAME_MODE::PlayMenu;
+		}
+		else if (_g_currrent_mode == GAME_MODE::PlayMenu){
+			this->_is_exit = true;
+		}
+		else if (_g_currrent_mode == GAME_MODE::PlayMap){
+			_g_currrent_mode = GAME_MODE::PlayMenu;
+		}
+
 		break;
+	}
+
 	}
 }
 
@@ -562,8 +145,5 @@ void CrazyCat::OnKeyUp(int KeyCode)
 }
 
 void CrazyCat::AddBomb(){
-	float x = (int)((this->_character->getPosition().x + BOMB_WIDTH / 2) / BOMB_WIDTH)*(float)BOMB_WIDTH;
-	float y = (int)((this->_character->getPosition().y + BOMB_WIDTH) / BOMB_WIDTH)*(float)BOMB_HEIGHT;
-	Bomb *newBomb = new Bomb(1000, x, y, BOMB_WIDTH, BOMB_HEIGHT, this->_directXDivice->getSpriteHandler(), BOMB_IMG, 3, 3, true, true, true, true);
-	this->_list_bombs.push_back(newBomb);
+	this->_g_mapmgt->addBomb(this->_directXDivice->getSpriteHandler());
 }

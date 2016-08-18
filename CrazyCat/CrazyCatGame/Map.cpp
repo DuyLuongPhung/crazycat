@@ -1,54 +1,70 @@
 ﻿#include "Map.h"
 
 
-Map::Map(){
+Map::Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPath, DWORD mapTimes){
 	this->_m_background = NULL;
-	this->_screen_height = 0;
-	this->_screen_width = 0;
 	this->_m_width = 0;
 	this->_m_height = 0;
+	this->_m_tile_img = tilePathImg;
+	this->_m_tile_txt = tilePathTxt;
+	this->_m_object_info = objectPath;
+	this->_m_title = mapTitle;
+	this->_m_maximum_times = mapTimes;
 }
 
 
 Map::~Map()
 {
+
+}
+
+void Map::inital(LPDIRECT3DDEVICE9 d3ddev){
+	readMapTileBackground(d3ddev, this->_m_tile_img, this->_m_tile_txt, this->_m_width, this->_m_height);
+	readMapObjects(this->_m_object_info);
+}
+
+void Map::update(int deltaTime, D3DXVECTOR2 viewPort){
 	
 }
 
-void Map::inital(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt,
-	LPWSTR objectPath,  int scrWidth, int scrHeight){
-	readMapTileBackground(d3ddev, tilePathImg, tilePathTxt, this->_m_width, this->_m_height);
-	this->_screen_height = scrHeight;
-	this->_screen_width = scrWidth;
-	readMapObjects(objectPath);
+void Map::addNewObjects(CGameObject * insertObject){
+	this->_list_objects.push_back(insertObject);
 }
 
-void Map::render(CDirectX * directX, D3DXVECTOR2 viewPort){
+void Map::draw(CDirectX * directX, D3DXVECTOR2 viewPort, int gamesceneWidth, int gamesceneHeight){
+
+	#pragma region Background
 	// lấy khung hình cho frame hiện tại
 	RECT srcRect;
 	srcRect.left = viewPort.x;
-	srcRect.right = srcRect.left + this->_screen_width;
+	srcRect.right = srcRect.left + gamesceneWidth;
 	srcRect.top = _m_height - viewPort.y;
-	srcRect.bottom = srcRect.top + this->_screen_height;
+	srcRect.bottom = srcRect.top + gamesceneHeight;
 
 	// lấy khung sẽ vẽ trên màn hình
 	RECT desRect;
 	desRect.left = 0;
-	desRect.right = desRect.left + this->_screen_width;
-	desRect.top = INFO_BAR_HEIGHT;
-	desRect.bottom = desRect.top + this->_screen_height;
+	desRect.right = desRect.left + gamesceneWidth;
+	desRect.top = 0;
+	desRect.bottom = desRect.top + gamesceneHeight;
 
-	// vẽ khung hình lên bạc buffer
+	// vẽ khung hình lên backbuffer
 	directX->getDevice()->StretchRect(this->_m_background, &srcRect, directX->getBackBuffer(), &desRect, D3DTEXF_NONE);
-
+	#pragma endregion
+	
+	#pragma region Object
+	for (int i = 0; i < this->_list_objects.size(); i++){
+		this->_list_objects.at(i)->draw(viewPort);
+	}
+	#pragma endregion
 }
 
 /**********************************************************************************
-* Đọc file text và file img thu nhỏ để lấy hình nền map cho các đối tượng tĩnh 
+* Đọc file text và file img thu nhỏ để lấy hình nền map cho các đối tượng tĩnh
 * Kết quả: là ảnh nền chứa các đối tượng tĩnh
 ***********************************************************************************/
 void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt,
-	int &mapWidth, int &mapHeight ){
+	int &mapWidth, int &mapHeight){
 	std::ifstream myfile(tilePathTxt);
 
 	if (myfile.is_open())
@@ -71,7 +87,7 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 		int** mTileMatrix = NULL;
 		int currentRows = 0;
 
-		#pragma region Đọc file text
+#pragma region Đọc file text
 
 		while (std::getline(myfile, line))
 		{
@@ -184,9 +200,9 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 
 		}
 
-		#pragma endregion
+#pragma endregion
 
-		#pragma region Đọc file ảnh
+#pragma region Đọc file ảnh
 
 
 		LPDIRECT3DSURFACE9 shortImg = LoadSurfaceFromFile(d3ddev, tilePathImg, D3DCOLOR_XRGB(255, 0, 255));
@@ -221,7 +237,7 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 			}
 		}
 
-		#pragma endregion
+#pragma endregion
 
 		this->_m_height = mHeight;
 		this->_m_width = mWidth;
@@ -259,7 +275,7 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 		std::vector<TileMap> all_quadnodes;
 		std::vector<QNodeObjects> all_objects;
 
-		#pragma region Đọc file text
+#pragma region Đọc file text
 
 		while (std::getline(myfile, line))
 		{
@@ -358,7 +374,7 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 			}
 			if (mode == 4)		// đọc thông tin các objects trong map
 			{
-				
+
 				if (line[0] == ' ')
 					line.erase(0, 1);
 				size_t pos = 0;
@@ -376,7 +392,7 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 						qobject.x = stoi(token);
 					if (j == 3)	// y
 						qobject.y = stoi(token);
-					
+
 					line.erase(0, pos + 1);
 					j++;
 				}
@@ -385,7 +401,7 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 
 		}
 
-		#pragma endregion
+#pragma endregion
 
 		myfile.close();
 		for (int j = 0; j < all_objects.size(); j++){
@@ -411,36 +427,36 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 
 		/*std::vector<CQuadNode*>* all_q_nodes;
 		for (int i = 0; i < all_quadnodes.size(); i++){
-			int id = all_quadnodes.at(i).id;
-			int x = all_quadnodes.at(i).x;
-			int y = all_quadnodes.at(i).y;
-			int w = all_quadnodes.at(i).w;
-			int h = all_quadnodes.at(i).h;
+		int id = all_quadnodes.at(i).id;
+		int x = all_quadnodes.at(i).x;
+		int y = all_quadnodes.at(i).y;
+		int w = all_quadnodes.at(i).w;
+		int h = all_quadnodes.at(i).h;
 
-			std::vector<CGameObject*> q_node_objects;
-			for (int j = 0; j < all_objects.size(); j++){
-				int typeId = -1;
-				int x = all_objects.at(j).x;
-				int y = all_objects.at(j).y;
-				int  w = 0, h = 0;
-				for (int k = 0; k < all_items.size(); k++){
-					if (all_objects.at(j).index == all_items.at(k).index){
-						w = all_items.at(k).w;
-						h = all_items.at(k).w;
-						typeId = all_items.at(k).typeId;
-						break;
-					}
-				}
-				if (typeId ==  BRICK_ID)
-				{
-					CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
-					all_objects.erase(all_objects.begin() + j--);
-					q_node_objects.push_back(objAdd);
-				}
-			}
+		std::vector<CGameObject*> q_node_objects;
+		for (int j = 0; j < all_objects.size(); j++){
+		int typeId = -1;
+		int x = all_objects.at(j).x;
+		int y = all_objects.at(j).y;
+		int  w = 0, h = 0;
+		for (int k = 0; k < all_items.size(); k++){
+		if (all_objects.at(j).index == all_items.at(k).index){
+		w = all_items.at(k).w;
+		h = all_items.at(k).w;
+		typeId = all_items.at(k).typeId;
+		break;
+		}
+		}
+		if (typeId ==  BRICK_ID)
+		{
+		CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
+		all_objects.erase(all_objects.begin() + j--);
+		q_node_objects.push_back(objAdd);
+		}
+		}
 
-			CQuadNode* node = new CQuadNode(id, D3DXVECTOR2(x, y), D3DXVECTOR2(w, h), q_node_objects);
-			all_q_nodes->push_back(node);
+		CQuadNode* node = new CQuadNode(id, D3DXVECTOR2(x, y), D3DXVECTOR2(w, h), q_node_objects);
+		all_q_nodes->push_back(node);
 		}
 		this->_m_quad_object = new CQuadTree(all_q_nodes);*/
 	}

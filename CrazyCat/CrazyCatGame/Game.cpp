@@ -6,7 +6,6 @@ CGame::CGame(HINSTANCE hInstance, LPWSTR Name, int Mode, int IsFullScreen, int F
 {
 	this->_directXDivice = NULL;
 	this->_keyboardDevice = NULL;
-	this->_Camera = NULL;
 	this->_mode = Mode;
 	this->_SetScreenDimension(Mode);
 	this->_name = Name;
@@ -14,6 +13,7 @@ CGame::CGame(HINSTANCE hInstance, LPWSTR Name, int Mode, int IsFullScreen, int F
 	this->_frameRate = FrameRate;
 	this->_hInstance = hInstance;
 	this->_hWnd = NULL;
+	this->_is_exit = false;
 }
 
 void CGame::_SetScreenDimension(int Mode)
@@ -21,15 +21,15 @@ void CGame::_SetScreenDimension(int Mode)
 	switch (Mode)
 	{
 	case GAME_SCREEN_RESOLUTION_24:
-		_screenWidth = 480;
-		_screenHeight = 444;
+		_screenWidth = 600;
+		_screenHeight = 448;
 		_depth = 24;
 		_backBufferFormat = D3DFMT_X8R8G8B8;
 		break;
 
 	case GAME_SCREEN_RESOLUTION_32:
-		_screenWidth = 480;
-		_screenHeight = 444;
+		_screenWidth = 600;
+		_screenHeight = 448;
 		_depth = 32;
 		_backBufferFormat = D3DFMT_X8R8G8B8;
 		break;
@@ -94,7 +94,6 @@ void CGame::Init()
 	_directXDivice->InitDirectX();
 	_keyboardDevice = new CKeyboard(_hWnd, _hInstance);
 	_keyboardDevice->InitKeyboard();
-	_Camera = new CCamera(_screenWidth, _screenHeight);
 	LoadResources(_directXDivice->getDevice());
 }
 
@@ -138,18 +137,17 @@ void CGame::_Update()
 void CGame::Run()
 {
 	MSG msg;
-	int done = 0;
 	DWORD frame_start = GetTickCount();;
 
 	DWORD tick_per_frame = 1000 / _frameRate;
 
 	trace(L">>> Main game loop has been started");
 
-	while (!done)
+	while (!_is_exit)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT) done = 1;
+			if (msg.message == WM_QUIT) this->_is_exit = true;
 
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -187,7 +185,7 @@ void CGame::_RenderFrame()
 
 void CGame::RenderFrame(LPDIRECT3DDEVICE9 d3ddv, int Delta)
 {
-	d3ddv->ColorFill(_directXDivice->getBackBuffer(), NULL, D3DCOLOR_XRGB(255, 255, 255));
+	d3ddv->ColorFill(_directXDivice->getBackBuffer(), NULL, D3DCOLOR_XRGB(245, 245, 245));
 }
 void CGame::LoadResources(LPDIRECT3DDEVICE9 d3ddv) { }
 

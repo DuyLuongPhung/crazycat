@@ -73,6 +73,9 @@
     <Filter Include="CrazyCat\Menu">
       <UniqueIdentifier>{75606798-0839-4fd9-8b80-f92feeeae087}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CrazyCat\Help">
+      <UniqueIdentifier>{75bf26f0-f089-4e9b-b257-8cf7f25da95f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -147,14 +150,23 @@
     <ClCompile Include="FireBang.cpp">
       <Filter>CrazyCat\Object\Bomb</Filter>
     </ClCompile>
-    <ClCompile Include="Ghost.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MenuButton.cpp">
       <Filter>CrazyCat\Menu</Filter>
     </ClCompile>
     <ClCompile Include="GameMenu.cpp">
       <Filter>CrazyCat\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayMapMgt.cpp">
+      <Filter>CrazyCat\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="HelpMgt.cpp">
+      <Filter>CrazyCat\Help</Filter>
+    </ClCompile>
+    <ClCompile Include="GameBar.cpp">
+      <Filter>CrazyCat\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Ghost.cpp">
+      <Filter>CrazyCat\Object\Ghost</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,14 +242,23 @@
     <ClInclude Include="FireBang.h">
       <Filter>CrazyCat\Object\Bomb</Filter>
     </ClInclude>
-    <ClInclude Include="Ghost.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameMenu.h">
       <Filter>CrazyCat\Menu</Filter>
     </ClInclude>
     <ClInclude Include="MenuButton.h">
       <Filter>CrazyCat\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayMapMgt.h">
+      <Filter>CrazyCat\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="HelpMgt.h">
+      <Filter>CrazyCat\Help</Filter>
+    </ClInclude>
+    <ClInclude Include="GameBar.h">
+      <Filter>CrazyCat\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Ghost.h">
+      <Filter>CrazyCat\Object\Ghost</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
