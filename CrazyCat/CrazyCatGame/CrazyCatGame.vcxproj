@@ -97,20 +97,22 @@
     <ClCompile Include="GameMenu.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="GiftBox.cpp" />
     <ClCompile Include="HelpMgt.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuButton.cpp" />
-    <ClCompile Include="Pallet.cpp" />
     <ClCompile Include="PlayMapMgt.cpp" />
     <ClCompile Include="QuadNode.cpp" />
     <ClCompile Include="QuadTree.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteResource.cpp" />
     <ClCompile Include="StaticGameObject.cpp" />
     <ClCompile Include="SweptAABB.cpp" />
     <ClCompile Include="Text.cpp" />
-    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileBox.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -130,19 +132,21 @@
     <ClInclude Include="GameMenu.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="GiftBox.h" />
     <ClInclude Include="HelpMgt.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuButton.h" />
-    <ClInclude Include="Pallet.h" />
     <ClInclude Include="PlayMapMgt.h" />
     <ClInclude Include="QuadNode.h" />
     <ClInclude Include="QuadTree.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteResource.h" />
     <ClInclude Include="StaticGameObject.h" />
     <ClInclude Include="SweptAABB.h" />
     <ClInclude Include="Text.h" />
-    <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileBox.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -28,10 +28,10 @@ CCharacter::~CCharacter()
 
 void CCharacter::inital(LPD3DXSPRITE spriteHandler)
 {
-	this->_walking_right = new CSprite(spriteHandler, WALK_RIGHT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
-	this->_walking_left = new CSprite(spriteHandler, WALK_LEFT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
-	this->_walking_front = new CSprite(spriteHandler, WALK_FRONT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
-	this->_walking_behind = new CSprite(spriteHandler, WALK_BEHIND_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
+	this->_walking_right = new CSprite(spriteHandler, BOMBER_RIGHT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
+	this->_walking_left = new CSprite(spriteHandler, BOMBER_LEFT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
+	this->_walking_front = new CSprite(spriteHandler, BOMBER_FRONT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
+	this->_walking_behind = new CSprite(spriteHandler, BOMBER_BEHIND_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
 	
 
 	this->_last_time = GetTickCount();
@@ -45,7 +45,7 @@ void CCharacter::update(int deltaTime)
 void CCharacter::draw(D3DXVECTOR2 view_port)
 {
 	DWORD now = GetTickCount();
-	if ((now - this->_last_time) > (1000 / ANIMATE_RATE))
+	if ((now - this->_last_time) > (1000 / BOMBER_ANIMATE_RATE))
 	{
 		switch (this->_now_states)
 		{
@@ -172,23 +172,23 @@ void CCharacter::UpdatePosition(int deltaTime)
 {
 	if (this->_now_states == Move_States::Walking_Left)
 	{
-		this->_velocity_x = -VELOCITY_X*deltaTime;
+		this->_velocity_x = -BOMBER_VELOCITY_X*deltaTime;
 		this->_velocity_y = 0.0f;
 	}
 	else if (this->_now_states == Move_States::Walking_Right)
 	{
-		this->_velocity_x = VELOCITY_X*deltaTime;
+		this->_velocity_x = BOMBER_VELOCITY_X*deltaTime;
 		this->_velocity_y = 0.0f;
 	}
 	else if (this->_now_states == Move_States::Walking_Front)
 	{
 		this->_velocity_x = 0.0f;
-		this->_velocity_y = -VELOCITY_Y*deltaTime;
+		this->_velocity_y = -BOMBER_VELOCITY_Y*deltaTime;
 	}
 	else if (this->_now_states == Move_States::Walking_Behind)
 	{
 		this->_velocity_x = 0.0f;
-		this->_velocity_y = VELOCITY_Y*deltaTime;
+		this->_velocity_y = BOMBER_VELOCITY_Y*deltaTime;
 	}
 	else{
 		return;

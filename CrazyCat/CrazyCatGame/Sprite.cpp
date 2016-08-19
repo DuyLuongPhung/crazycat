@@ -1,7 +1,11 @@
 #include "Sprite.h"
-//#include "trace.h"
 #include <d3dx9.h>
 #include "Camera.h"
+
+CSprite::CSprite(){
+	this->_Image = NULL;
+	this->_SpriteHandler = NULL;
+}
 
 CSprite::CSprite(LPD3DXSPRITE SpriteHandler, LPWSTR FilePath, int Width, int Height, int Count, int SpritePerRow)
 {
@@ -167,8 +171,6 @@ int CSprite::getHeight(){
 	return this->_Height;
 }
 
-
 CSprite::~CSprite()
 {
-	_Image->Release();
 }

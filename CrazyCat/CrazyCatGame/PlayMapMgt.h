@@ -11,10 +11,10 @@
 #include "Collision.h"
 #include <time.h>
 #include <d3dx9.h>
-#include "GameMenu.h"
 #include "FireBang.h"
 #include "HelpMgt.h"
 #include "GameBar.h"
+#include "ResourceManager.h"
 
 class PlayMapMgt
 {
@@ -25,6 +25,7 @@ private:
 	DWORD			_b_map_times;				// thời gian còn lại để hoàn thành map
 	int				_b_keys;					// số chìa khóa đã lấy được
 	CCharacter *	_b_bomber_man;				// nhân vật: bomber man
+	bool			_super_boom;
 
 	// Thông tin game
 	//LPDIRECT3DSURFACE9	_background;				// Màn hình game 
@@ -37,6 +38,7 @@ private:
 	std::vector<Map*>	_list_map;
 	int					_current_map;
 	std::vector<GameBar*> _list_gamebar;
+	ResourceManager * _resourceMgt;
 	// 
 public:
 	PlayMapMgt();
@@ -55,5 +57,9 @@ public:
 	void			bomberRunFront();
 	void			bomberRunBehind();
 	void			bomberMoveNone();
+
+private:
+	void			activedNormalBomb(int index);
+	void			activedSuperBomb(int index);
 };
 

@@ -92,11 +92,11 @@ void CrazyCat::OnKeyDown(int KeyCode)
 	{
 		if (_g_currrent_mode == GAME_MODE::PlayMenu)
 		{
-			if (_g_menu->getCurrentButtonId() == HELP_BUTTON_ID)
+			if (_g_menu->getCurrentButtonId() == MENU_HELP_BUTTON_ID)
 			{
 				_g_currrent_mode = GAME_MODE::PlayHelp;
 			}
-			else if (_g_menu->getCurrentButtonId() == EXIT_BUTTON_ID){
+			else if (_g_menu->getCurrentButtonId() == MENU_EXIT_BUTTON_ID){
 				this->_is_exit = true;
 			}
 			else{

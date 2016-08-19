@@ -499,26 +499,22 @@ namespace MapEditor
                     if (findIndex >= 0)
                         continue;
                     allSaveItemedId.Add(_listSourceItem[i].Index);
-                    FileStream streamImg = new FileStream(_listSourceItem[i].Path, FileMode.Open);
-                    Image img = Image.FromStream(streamImg);
-                    streamImg.Flush();
-                    streamImg.Close();
+                    //FileStream streamImg = new FileStream(_listSourceItem[i].Path, FileMode.Open);
+                    //Image img = Image.FromStream(streamImg);
+                    //streamImg.Flush();
+                    //streamImg.Close();
 
-                    string itemNameSave = Path.GetFileNameWithoutExtension(_listSourceItem[i].Path);
-                    string pathImage = Path.Combine(pathSave, itemNameSave + ".png");
+                    //string itemNameSave = Path.GetFileNameWithoutExtension(_listSourceItem[i].Path);
+                    //string pathImage = Path.Combine(pathSave, itemNameSave + ".png");
                     //if (_listSourceItem[i].ID > 5)      // các item động
-                        img.Save(pathImage, ImageFormat.Png);
+                     //   img.Save(pathImage, ImageFormat.Png);
                     //else
                        // pathImage = "*";
                     strWriter.WriteLine("" 
                         + _listSourceItem[i].Index + " "               // item index
                         + _listSourceItem[i].TypeID + " "               // item type ID
-                        + Path.GetFileName(pathImage) + " "               // item save name
                         + _listSourceItem[i].ItemWidth + " "        // item width
                         + _listSourceItem[i].ItemHeight + " "       // item height
-                        + _listSourceItem[i].MoveStatus + " "       // is moveable: 0-none, 1-move
-                        + +_listSourceItem[i].CountSprite + " "     // count sprite: if have else < 0
-                        + _listSourceItem[i].SpritePerRow + " "     // sprite per row: if have else < 0
                         ); 
                 }
                 strWriter.WriteLine();
@@ -631,6 +627,22 @@ namespace MapEditor
                 // save text
                 StreamWriter strWriter = new StreamWriter(mapPathText, true);
                 strWriter.WriteLine();
+
+                // basic information
+                strWriter.WriteLine(
+                    (_columns * _tileWidth) + " "       // map width
+                    + (_rows * _tileHeight) + " "       // map height
+                    + (_rows) + " "                     // rows
+                    + (_columns) + " "                  // columns
+                    + (_tileWidth) + " "                // tile width
+                    + (_tileHeight) + " "               // tile height
+                    );
+                strWriter.WriteLine();
+
+                 // basic information
+                strWriter.WriteLine(resultBitmap.Count + "");
+                strWriter.WriteLine();
+
                 int imgHeight = (resultBitmap.Count / _imageSaveInRow + 1) * (resultBitmap[0].Height);
                 int imgWidth = _imageSaveInRow * resultBitmap[0].Width;
                 using (Bitmap bitmapSave = new Bitmap(imgWidth, imgHeight))

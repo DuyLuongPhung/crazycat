@@ -185,27 +185,16 @@ namespace MapEditor.UtilsForm
             _allTypeStaticItem = new List<ComboboxItem>();
             _allTypeMovableItem = new List<ComboboxItem>();
 
-            _allTypeStaticItem.Add(new ComboboxItem(1, "1. Stone: Đất - đá(phần dưới đáy)"));
-            _allTypeStaticItem.Add(new ComboboxItem(2, "2. Chimney_T01: ống khói không chui vào được"));
-            _allTypeStaticItem.Add(new ComboboxItem(3, "3. Chimney_T02: ống khói chui vào được"));
-            _allTypeStaticItem.Add(new ComboboxItem(4, "4. Wall: những khối tường dựng đứng"));
-            _allTypeStaticItem.Add(new ComboboxItem(5, "5. Wood: gỗ"));
-
-            _allTypeMovableItem.Add(new ComboboxItem(6, "6. Coin: đồng tiền"));
-            _allTypeMovableItem.Add(new ComboboxItem(7, "7. 1 up MushRoom: nấm xanh thêm 1 mạng"));
-            _allTypeMovableItem.Add(new ComboboxItem(8, "8. Brick: gạch"));
-            _allTypeMovableItem.Add(new ComboboxItem(9, "9. Switch Block: item để dổi các ô gạch ra tiền"));
-            _allTypeMovableItem.Add(new ComboboxItem(10, "10. Cards: item để qua màn"));
-            _allTypeMovableItem.Add(new ComboboxItem(11, "11. QuestionBlock: hộp có dấu hỏi để ăn item và sau khi ăn item"));
-            _allTypeMovableItem.Add(new ComboboxItem(12, "12. Goomba: con goomba bình thường"));
-            _allTypeMovableItem.Add(new ComboboxItem(13, "13. Vernus fire trap green: con quái hoa bắn đạn"));
-            _allTypeMovableItem.Add(new ComboboxItem(14, "14. Koopa troopa green: con rùa không nhảy đc màu xanh"));
-            _allTypeMovableItem.Add(new ComboboxItem(15, "15. Koopa troopa red: con rùa ko nhảy đc màu đỏ"));
-            _allTypeMovableItem.Add(new ComboboxItem(16, "16. Koopa paratroopa green: con rùa nhảy đc màu xanh"));
-            _allTypeMovableItem.Add(new ComboboxItem(17, "17. Para - goomba : con goomba nhảy đc"));
-            _allTypeMovableItem.Add(new ComboboxItem(18, "18. Piranha plant: con quái hoa ăn thịt ko bắn đạn"));
-            _allTypeMovableItem.Add(new ComboboxItem(19, "19. Leaf- Mushroom: có thể là lá hoặc nấm"));
-            _allTypeMovableItem.Add(new ComboboxItem(20, "20. vernus fire trap red: con quái hoa bắn đạn màu đỏ"));
+            _allTypeStaticItem.Add(new ComboboxItem(1, "1. Tường, đất - object tĩnh"));
+            _allTypeStaticItem.Add(new ComboboxItem(2, "2. Hộp gỗ - bình thường"));
+            _allTypeStaticItem.Add(new ComboboxItem(3, "3. Hộp gỗ - vàng"));
+            _allTypeStaticItem.Add(new ComboboxItem(4, "4. Hộp gỗ - mạng chơi"));
+            _allTypeStaticItem.Add(new ComboboxItem(5, "5. Hộp gỗ - thời gian chơi"));
+            _allTypeStaticItem.Add(new ComboboxItem(6, "6. Hộp gỗ - tăng vận tốc"));
+            _allTypeStaticItem.Add(new ComboboxItem(7, "7. Hộp gỗ - super bomb"));
+            _allTypeStaticItem.Add(new ComboboxItem(12, "12. Hộp quà  - chìa khóa qua màn"));
+            _allTypeStaticItem.Add(new ComboboxItem(14, "14. Của qua màn"));
+            _allTypeStaticItem.Add(new ComboboxItem(25, "25. Con ma - ghost"));
 
             rdStaticObject.Checked = true;
             _isLoadImage = false;

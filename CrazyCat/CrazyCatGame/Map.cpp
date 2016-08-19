@@ -321,23 +321,17 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 				int j = 0;
 				QNodeItem item;
 
-				while ((pos = line.find(" ")) != std::string::npos && j < 7)
+				while ((pos = line.find(" ")) != std::string::npos && j < 4)
 				{
 					token = line.substr(0, pos);
 					if (j == 0)	// index
 						item.index = stoi(token);
 					if (j == 1)	// type id
 						item.typeId = stoi(token);
-					if (j == 2)	// path inage
-						item.source_image = token;
-					if (j == 3)	// item width
+					if (j == 2)	// item width
 						item.w = stoi(token);
-					if (j == 4)	// item height
+					if (j == 3)	// item height
 						item.h = stoi(token);
-					if (j == 5)	// count sprite
-						item.count_sprites = stoi(token);
-					if (j == 6)	// sprite per row
-						item.sprite_per_row = stoi(token);
 					line.erase(0, pos + 1);
 					j++;
 				}
@@ -417,7 +411,7 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 					break;
 				}
 			}
-			if (typeId == BRICK_ID)
+			if (typeId == ID_BRICK)
 			{
 				CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
 				all_objects.erase(all_objects.begin() + j--);

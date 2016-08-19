@@ -30,8 +30,8 @@ public:
 	void				setVelocity(float vx, float vy);
 	D3DXVECTOR2			getVelocity(){ return D3DXVECTOR2(this->_velocity_x, this->_velocity_y); }
 
-	int					getWidth(){ return this->_width; }
-	int					getHeight(){ return this->_height; }
+	float					getWidth(){ return this->_width; }
+	float					getHeight(){ return this->_height; }
 
 	virtual CBox		getBounding();
 	virtual void		inital(LPD3DXSPRITE sprite_handler);

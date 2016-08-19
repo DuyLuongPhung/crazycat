@@ -1,16 +1,19 @@
 #include "Bomb.h"
 
 
-Bomb::Bomb(int id, float x, float y, float width, float height, LPD3DXSPRITE spritHandler, LPWSTR filePath,
-	int countSprite, int spritePerRow, bool isLeft, bool isRight, bool isTop, bool isBottom)
-	:CDynamicGameObject(id, x, y, width, height, 0.0f, 0.0f, spritHandler, filePath, countSprite, spritePerRow)
+Bomb::Bomb(int id, float x, float y, float width, float height, CSprite* spriteSource, DWORD timeExist)
 {
-	this->_is_left = isLeft;
-	this->_is_right = isRight;
-	this->_is_top = isTop;
-	this->_is_bottom = isBottom;
+	this->_id = id;
+	this->_position_x = x;
+	this->_position_y = y;
+	this->_width = width;
+	this->_height = height;
+	this->_velocity_x = 0.0f;
+	this->_velocity_y = 0.0f;
+
 	this->_is_fire = false;
-	this->_start_time = GetTickCount();
+	this->_exist_time = timeExist;
+	this->_sprite_resource = spriteSource;
 }
 
 
@@ -29,10 +32,10 @@ void Bomb::inital(LPD3DXSPRITE sprite_handler)
 void Bomb::update(int deltaTime)
 {
 	DWORD now = GetTickCount();
-	if ((now - this->_start_time) > BOMB_TIME_FIRE)
+	if ((now - this->_start_time) > this->_exist_time)
 		this->Fire();
 
-	if ((now - this->_last_time) > (1000 / ANIMATE_RATE_BOMB))
+	if ((now - this->_last_time) > (1000 / BOMB_ANIMATE_RATE))
 	{
 		if (this->_is_fire)
 			return;

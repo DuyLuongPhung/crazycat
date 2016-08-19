@@ -3,11 +3,11 @@
 
 Brick::Brick()
 {
-	this->_id = BRICK_ID;
+	this->_id = ID_BRICK;
 }
 
 Brick::Brick(float x, float y, float width, float height, float vx, float vy)
-	: CStaticGameObject(BRICK_ID, x, y, width, height, vx, vy)
+	: CStaticGameObject(ID_BRICK, x, y, width, height, vx, vy)
 {
 }
 

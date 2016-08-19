@@ -63,16 +63,16 @@ void GameMenu::initalStartMenu(LPD3DXSPRITE spriteHandler){
 
 	this->_list_buttons.clear();
 	// start button
-	MenuButton *startButton = new MenuButton(START_BUTTON_ID, this->_m_x + START_BUTTON_X,
-		this->_m_y + START_BUTTON_Y, spriteHandler, START_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, true);
+	MenuButton *startButton = new MenuButton(MENU_START_BUTTON_ID, this->_m_x + MENU_START_BUTTON_X,
+		this->_m_y + MENU_START_BUTTON_Y, spriteHandler, MENU_START_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, true);
 	this->_list_buttons.push_back(startButton);
 	// help button
-	MenuButton *helpButton = new MenuButton(HELP_BUTTON_ID, this->_m_x + HELP_BUTTON_X,
-		this->_m_y + HELP_BUTTON_Y, spriteHandler, HELP_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
+	MenuButton *helpButton = new MenuButton(MENU_HELP_BUTTON_ID, this->_m_x + MENU_HELP_BUTTON_X,
+		this->_m_y + MENU_HELP_BUTTON_Y, spriteHandler, MENU_HELP_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
 	this->_list_buttons.push_back(helpButton);
 	// exit button
-	MenuButton *exitButton = new MenuButton(EXIT_BUTTON_ID, this->_m_x + EXIT_BUTTON_X,
-		this->_m_y + EXIT_BUTTON_Y, spriteHandler, EXIT_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
+	MenuButton *exitButton = new MenuButton(MENU_EXIT_BUTTON_ID, this->_m_x + MENU_EXIT_BUTTON_X,
+		this->_m_y + MENU_EXIT_BUTTON_Y, spriteHandler, MENU_EXIT_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
 	this->_list_buttons.push_back(exitButton);
 	this->_current_button = 0;
 }
@@ -83,16 +83,16 @@ void GameMenu::initalPauseMenu(LPD3DXSPRITE spriteHandler){
 
 	this->_list_buttons.clear();
 	// start button
-	MenuButton *resumeButton = new MenuButton(RESUME_BUTTON_ID, this->_m_x + RESUME_BUTTON_X,
-		this->_m_y + RESUME_BUTTON_Y, spriteHandler, RESUME_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, true);
+	MenuButton *resumeButton = new MenuButton(MENU_RESUME_BUTTON_ID, this->_m_x + MENU_RESUME_BUTTON_X,
+		this->_m_y + MENU_RESUME_BUTTON_Y, spriteHandler, MENU_RESUME_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, true);
 	this->_list_buttons.push_back(resumeButton);
 	// help button
-	MenuButton *helpButton = new MenuButton(HELP_BUTTON_ID, this->_m_x + HELP_BUTTON_X,
-		this->_m_y + HELP_BUTTON_Y, spriteHandler, HELP_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
+	MenuButton *helpButton = new MenuButton(MENU_HELP_BUTTON_ID, this->_m_x + MENU_HELP_BUTTON_X,
+		this->_m_y + MENU_HELP_BUTTON_Y, spriteHandler, MENU_HELP_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
 	this->_list_buttons.push_back(helpButton);
 	// exit button
-	MenuButton *exitButton = new MenuButton(EXIT_BUTTON_ID, this->_m_x + EXIT_BUTTON_X,
-		this->_m_y + EXIT_BUTTON_Y, spriteHandler, EXIT_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
+	MenuButton *exitButton = new MenuButton(MENU_EXIT_BUTTON_ID, this->_m_x + MENU_EXIT_BUTTON_X,
+		this->_m_y + MENU_EXIT_BUTTON_Y, spriteHandler, MENU_EXIT_BUTTON_IMG, BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, false);
 	this->_list_buttons.push_back(exitButton);
 	this->_current_button = 0;
 }

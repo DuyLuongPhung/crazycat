@@ -17,6 +17,7 @@ protected:
 	int _Count;								// Number of sprites
 	int _SpritePerRow;						// Number of sprites per row
 public:
+	CSprite();
 	CSprite(LPD3DXSPRITE SpriteHandler, LPWSTR FilePath, int Width, int Height, int Count, int SpritePerRow);
 	CSprite(LPD3DXSPRITE SpriteHandler, LPWSTR FilePath, int Width, int Height, int Count, int SpritePerRow, D3DCOLOR transparentColor);
 	~CSprite();

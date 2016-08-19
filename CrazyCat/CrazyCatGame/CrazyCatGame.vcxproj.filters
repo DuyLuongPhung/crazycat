@@ -55,9 +55,6 @@
     <Filter Include="CrazyCat\Object\Brick">
       <UniqueIdentifier>{d30e63a5-178f-48bd-9897-e3383a1b794f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CrazyCat\Object\Pallet">
-      <UniqueIdentifier>{b6cf5fb8-f928-4edf-b0e2-372d001f1d50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CrazyCat\Map">
       <UniqueIdentifier>{557ffdb8-b062-4e40-baeb-a234f81d7d8a}</UniqueIdentifier>
     </Filter>
@@ -76,11 +73,14 @@
     <Filter Include="CrazyCat\Help">
       <UniqueIdentifier>{75bf26f0-f089-4e9b-b257-8cf7f25da95f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CrazyCat\Object\GameBox">
+      <UniqueIdentifier>{b6cf5fb8-f928-4edf-b0e2-372d001f1d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CrazyCat\Resource">
+      <UniqueIdentifier>{acb49ca8-2c79-49a5-ba2e-83170bf91715}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>FrameWork\Camera</Filter>
     </ClCompile>
@@ -129,9 +129,6 @@
     <ClCompile Include="Brick.cpp">
       <Filter>CrazyCat\Object\Brick</Filter>
     </ClCompile>
-    <ClCompile Include="Pallet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>CrazyCat\Map</Filter>
     </ClCompile>
@@ -168,11 +165,20 @@
     <ClCompile Include="Ghost.cpp">
       <Filter>CrazyCat\Object\Ghost</Filter>
     </ClCompile>
+    <ClCompile Include="GiftBox.cpp">
+      <Filter>CrazyCat\Object\GameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="TileBox.cpp">
+      <Filter>CrazyCat\Object\GameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>CrazyCat\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteResource.cpp">
+      <Filter>CrazyCat\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>FrameWork\Camera</Filter>
     </ClInclude>
@@ -218,9 +224,6 @@
     <ClInclude Include="Brick.h">
       <Filter>CrazyCat\Object\Brick</Filter>
     </ClInclude>
-    <ClInclude Include="Pallet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>CrazyCat\Map</Filter>
     </ClInclude>
@@ -259,6 +262,18 @@
     </ClInclude>
     <ClInclude Include="Ghost.h">
       <Filter>CrazyCat\Object\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="GiftBox.h">
+      <Filter>CrazyCat\Object\GameBox</Filter>
+    </ClInclude>
+    <ClInclude Include="TileBox.h">
+      <Filter>CrazyCat\Object\GameBox</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteResource.h">
+      <Filter>CrazyCat\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>CrazyCat\Resource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

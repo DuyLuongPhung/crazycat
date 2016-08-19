@@ -52,10 +52,10 @@ Ghost::~Ghost()
 
 void Ghost::inital(LPD3DXSPRITE spriteHandler)
 {
-	this->_walking_right = new CSprite(spriteHandler, WALK_RIGHT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
+	/*this->_walking_right = new CSprite(spriteHandler, WALK_RIGHT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
 	this->_walking_left = new CSprite(spriteHandler, WALK_LEFT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
 	this->_walking_front = new CSprite(spriteHandler, WALK_FRONT_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
-	this->_walking_behind = new CSprite(spriteHandler, WALK_BEHIND_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);
+	this->_walking_behind = new CSprite(spriteHandler, WALK_BEHIND_IMG, BOMBER_WIDTH, BOMBER_HEIGHT_REAL, 3, 3);*/
 
 
 	this->_last_time = GetTickCount();
@@ -68,7 +68,7 @@ void Ghost::update(int deltaTime)
 
 void Ghost::draw(D3DXVECTOR2 view_port)
 {
-	DWORD now = GetTickCount();
+	/*DWORD now = GetTickCount();
 	if ((now - this->_last_time) > (1000 / ANIMATE_RATE))
 	{
 		switch (this->_now_states)
@@ -144,7 +144,7 @@ void Ghost::draw(D3DXVECTOR2 view_port)
 		}
 		break;
 	}
-
+*/
 }
 
 void Ghost::WalkingRight(){
@@ -184,7 +184,7 @@ CBox Ghost::getBounding()
 
 void Ghost::UpdatePosition(int deltaTime)
 {
-	if (this->_now_states == Move_States::Walking_Left)
+	/*if (this->_now_states == Move_States::Walking_Left)
 	{
 		this->_velocity_x = -VELOCITY_X*deltaTime;
 		this->_velocity_y = 0.0f;
@@ -208,6 +208,6 @@ void Ghost::UpdatePosition(int deltaTime)
 		return;
 	}
 	_position_x += _velocity_x;
-	_position_y += _velocity_y;
+	_position_y += _velocity_y;*/
 }
 
