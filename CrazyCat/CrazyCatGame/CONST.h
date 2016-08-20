@@ -48,14 +48,19 @@
 #define IMG_FIREBANG_MIDLR L"firebang_midlr.png"
 #define ID_FIREBANG_MIDTB 23							// fire bang mid top-down - đường nổ của bom giữa dọc
 #define IMG_FIREBANG_MIDTB L"firebang_midtb.png"
-#define ID_FIREBANG_CENTER 24							// fire bang center - đường nổ của bom ở trung tâm
+#define ID_FIREBANG_CENTER 26							// fire bang center - đường nổ của bom ở trung tâm
 #define IMG_FIREBANG_CENTER L"firebang_center.png"
 #define BOMB_ANIMATE_RATE 8
-#define FIREBANG_ANIMATE_RATE 4
+#define FIREBANG_ANIMATE_RATE 8
 
-#define FIREBANG_EXIST_TIME 1000
-#define NORMAL_BOMB_EXIST_TIME 2500
-#define SUPER_BOMB_EXIST_TIME 2000
+#define WIDTH_SUPER_FIREBANG_LR 64
+#define HEIGHT_SUPER_FIREBANG_LR 32
+#define WIDTH_SUPER_FIREBANG_TB 32
+#define HEIGHT_SUPER_FIREBANG_TB 64
+
+#define FIREBANG_EXIST_TIME 800
+#define NORMAL_BOMB_EXIST_TIME 2000
+#define SUPER_BOMB_EXIST_TIME 1500
 
 /* Các thông số cho nhân vật - bomber man */
 #define BOMBER_VELOCITY_X 0.15f
@@ -65,19 +70,30 @@
 #define BOMBER_LEFT_IMG L"bomber_left.png"
 #define BOMBER_FRONT_IMG L"bomber_front.png"
 #define BOMBER_BEHIND_IMG L"bomber_behind.png"
+#define BOMBER_DEAD_IMG L"bomber_dead.png"
 #define BOMBER_ANIMATE_RATE 16
-#define BOMBER_START_X 70
-#define BOMBER_START_Y 635
+#define BOMBER_START_X  70
+#define BOMBER_START_Y  1020
 #define BOMBER_WIDTH 18
 #define BOMBER_HEIGHT 18
 #define BOMBER_HEIGHT_HEAD 9
 #define BOMBER_HEIGHT_REAL 27
+#define BOMBER_BOOT_VELOCITY 1.1f;
+#define BOMBER_BOOT_VELOCITY_TIME 0.003f
+#define BOMBER_DEAD_TIME 2000
+#define BOMBER_ADD_BOMB_TIME 2000
 
 /* Các thông số cho menu */
-#define MENU_START_BUTTON_ID 0
-#define MENU_RESUME_BUTTON_ID 1
-#define MENU_HELP_BUTTON_ID 2
-#define MENU_EXIT_BUTTON_ID 3
+#define ID_MENU_RESOURCE 30
+#define MENU_BG_IMG L"game_menu_bg.png"
+#define WIDTH_MENU 320
+#define HEIGHT_MENU 416
+#define MENU_START_X 140
+#define MENU_START_Y 10
+#define MENU_START_BUTTON_ID 31
+#define MENU_RESUME_BUTTON_ID 32
+#define MENU_HELP_BUTTON_ID 33
+#define MENU_EXIT_BUTTON_ID 34
 
 #define MENU_START_BUTTON_X 64
 #define MENU_RESUME_BUTTON_X 64
@@ -127,8 +143,24 @@
 #define GAMEBAR_TIME_BAR_X	40
 #define GAMEBAR_TIME_BAR_Y 2
 
+#define GAMEBAR_SUPERBOMB_BAR_ID 5
+#define GAMEBAR_SUPERBOMB_BAR_IMG_FILE L"superbomb_game_bar.png"
+#define GAMEBAR_SUPERBOMB_BAR_X	130
+#define GAMEBAR_SUPERBOMB_BAR_Y 2
+
 /* Các thông số cho map */
-#define MAP_01_TIME_MAP 600000
+#define MAP_01_TIME_MAP 60000000
 #define MAP_01_IMG_FILE L"map1.img"
 #define MAP_01_TEXT_FILE L"map1.map"
 #define MAP_01_INFO_FILE L"map1.info"
+#define MAP_01_NEED_KEYS 5
+
+#define MAP_02_TIME_MAP 1200000000
+#define MAP_02_IMG_FILE L"map2.img"
+#define MAP_02_TEXT_FILE L"map2.map"
+#define MAP_02_INFO_FILE L"map2.info"
+#define MAP_02_NEED_KEYS 6
+
+#define MAP_TIME_WAITING 5000
+#define MAP_GAME_OVER_IMG L"game_over.png"
+#define MAP_START_MAP_IMG L"start_map.png"

@@ -16,7 +16,12 @@
 #include <fstream>
 #include <string>
 #include "QuadTree.h"
+#include "ResourceManager.h"
+
 #include "Brick.h"
+#include "TileBox.h"
+#include "GiftBox.h"
+#include "DoorObject.h"
 
 
 struct TileMap{
@@ -68,27 +73,30 @@ private:
 	LPWSTR		_m_tile_img;					// file ảnh nền gốc			
 	LPWSTR		_m_tile_txt;					// file thông tin ma trận để load ảnh nền
 	LPWSTR		_m_object_info;					// file thông tin map: thông tin cơ bản, quadtree, objects
+
+	int			_m_keys_need;
 public:
 	std::vector<CGameObject*> _list_objects;	// danh sách các objects trong map
 
 public:
-	Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPath, DWORD mapTimes);
+	Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPath, DWORD mapTimes, int needkeys);
 	~Map();
 
+	int				getNeedKeys(){ return this->_m_keys_need; }
 	DWORD			getMaximumTimes(){ return this->_m_maximum_times; }
 	int				getMapWidth(){ return this->_m_width; }
 	int				getMapHeight(){ return this->_m_height; }
 	char*			getMapTitle(){ return this->_m_title; }
 	void			addNewObjects(CGameObject * insertObject);
 
-	void			inital(LPDIRECT3DDEVICE9 d3ddev);
+	void			inital(LPDIRECT3DDEVICE9 d3ddev, ResourceManager * resourMgt);
 	void			update(int deltaTime, D3DXVECTOR2 nextViewPort);
 	void			draw(CDirectX * directX, D3DXVECTOR2 viewPort, int gamesceneWidth, int gamesceneHeight);
 
 private:
 	void			readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LPWSTR tilePathTxt,
 					int &mapWidth, int &mapHeight);
-	void			readMapObjects(LPWSTR mapInfoPath);
+	void			readMapObjects(LPWSTR mapInfoPath, ResourceManager * resourMgt);
 
 };
 

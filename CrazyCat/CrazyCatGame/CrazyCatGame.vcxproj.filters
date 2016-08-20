@@ -177,6 +177,15 @@
     <ClCompile Include="SpriteResource.cpp">
       <Filter>CrazyCat\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="TimeGameBar.cpp">
+      <Filter>CrazyCat\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="DoorObject.cpp">
+      <Filter>CrazyCat\Object\GameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyGameBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -274,6 +283,15 @@
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>CrazyCat\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeGameBar.h">
+      <Filter>CrazyCat\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorObject.h">
+      <Filter>CrazyCat\Object\GameBox</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyGameBar.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,9 +7,9 @@
 
 class GameBar
 {
-private:
+protected:
 	int _gb_id;
-	int _gb_value;
+	long _gb_value;
 	CSprite * _gb_background;
 	CText	* _gb_text_mgt;
 	CBox _gb_print_text;
@@ -21,7 +21,7 @@ public:
 
 	int getId(){ return this->_gb_id; }
 	void inital(int id, LPDIRECT3DDEVICE9 d3ddev, LPD3DXSPRITE SpriteHandler, LPWSTR bgPath, int bgWidth, int bgHeight, D3DXVECTOR2 position, CBox printTextBox, int defaultValue);
-	void updateValue(int newValue){ this -> _gb_value = newValue; }
-	void draw(LPD3DXSPRITE SpriteHandler);
+	void updateValue(long newValue){ this->_gb_value = newValue; }
+	virtual void draw(LPD3DXSPRITE SpriteHandler);
 };
 

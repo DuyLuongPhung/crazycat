@@ -1,12 +1,12 @@
 ﻿#include "PlayMapMgt.h"
 
 
-PlayMapMgt::PlayMapMgt()
+PlayMapMgt::PlayMapMgt(ResourceManager * resourceMgt)
 {
 	this->_list_map.clear();
 	this->_list_gamebar.clear();
 	this->_b_live = 0;
-	this->_b_gold = 5000;
+	this->_b_gold = 0;
 	this->_b_keys = 0;
 	this->_b_bomber_man = NULL;
 	this->_collision = NULL;
@@ -15,7 +15,8 @@ PlayMapMgt::PlayMapMgt()
 	this->_b_camera = NULL;
 	this->_screen_width = 0;
 	this->_screen_height = 0;
-	this->_resourceMgt = NULL;
+	this->_resourceMgt = resourceMgt;
+	this->_return_menu = false;
 }
 
 
@@ -24,19 +25,19 @@ PlayMapMgt::~PlayMapMgt()
 	SAFE_DELETE(this->_b_bomber_man);
 	SAFE_DELETE(this->_collision);
 	SAFE_DELETE(this->_b_camera);
-	SAFE_DELETE(this->_resourceMgt);
 }
 
 void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
+
 	// tạo ra các map và add vào danh sách tuy nhiên chưa khởi động cũng như chưa load map
 	this->_list_map.clear();
-	Map *map1 = new Map("White Farm", MAP_01_IMG_FILE, MAP_01_TEXT_FILE, MAP_01_INFO_FILE, MAP_01_TIME_MAP);
-	map1->inital(directX->getDevice());
+	Map *map1 = new Map("White Farm", MAP_01_IMG_FILE, MAP_01_TEXT_FILE, MAP_01_INFO_FILE, MAP_01_TIME_MAP, MAP_01_NEED_KEYS);
+	map1->inital(directX->getDevice(), this->_resourceMgt);
 	this->_list_map.push_back(map1);
 
-	// load sprite resource cho các đối tượng
-	this->_resourceMgt = new ResourceManager();
-	this->_resourceMgt->inital(directX);
+	Map *map2 = new Map("Black Farm", MAP_02_IMG_FILE, MAP_02_TEXT_FILE, MAP_02_INFO_FILE, MAP_02_TIME_MAP, MAP_02_NEED_KEYS);
+	map2->inital(directX->getDevice(), this->_resourceMgt);
+	this->_list_map.push_back(map2);
 
 	// tạo ra các thanh gamebar và add vào list
 	this->_list_gamebar.clear();
@@ -45,7 +46,7 @@ void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
 		D3DXVECTOR2(GAMEBAR_HEART_BAR_X, GAMEBAR_HEART_BAR_Y), CBox(GAMEBAR_TEXT_X, GAMEBAR_TEXT_Y, GAMEBAR_TEXT_WIDTH, GAMEBAR_TEXT_HEIGHT), DEFAULT_LIVE);
 	this->_list_gamebar.push_back(heartBar);
 
-	GameBar *keyBar = new GameBar();
+	GameBar *keyBar = new KeyGameBar();
 	keyBar->inital(GAMEBAR_KEY_BAR_ID, directX->getDevice(), directX->getSpriteHandler(), GAMEBAR_KEY_BAR_IMG_FILE, GAMEBAR_WIDTH, GAMEBAR_HEIGHT,
 		D3DXVECTOR2(GAMEBAR_KEY_BAR_X, GAMEBAR_KEY_BAR_Y), CBox(GAMEBAR_TEXT_X, GAMEBAR_TEXT_Y, GAMEBAR_TEXT_WIDTH, GAMEBAR_TEXT_HEIGHT), 0);
 	this->_list_gamebar.push_back(keyBar);
@@ -55,10 +56,15 @@ void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
 		D3DXVECTOR2(GAMEBAR_GOLD_BAR_X, GAMEBAR_GOLD_BAR_Y), CBox(GAMEBAR_TEXT_X, GAMEBAR_TEXT_Y, GAMEBAR_TEXT_WIDTH, GAMEBAR_TEXT_HEIGHT), 0);
 	this->_list_gamebar.push_back(goldBar);
 
-	GameBar *timeBar = new GameBar();
+	GameBar *timeBar = new TimeGameBar();
 	timeBar->inital(GAMEBAR_TIME_BAR_ID, directX->getDevice(), directX->getSpriteHandler(), GAMEBAR_TIME_BAR_IMG_FILE, GAMEBAR_WIDTH, GAMEBAR_HEIGHT,
-		D3DXVECTOR2(GAMEBAR_TIME_BAR_X, GAMEBAR_TIME_BAR_Y), CBox(GAMEBAR_TEXT_X, GAMEBAR_TEXT_Y, GAMEBAR_TEXT_WIDTH, GAMEBAR_TEXT_HEIGHT), 0);
+		D3DXVECTOR2(GAMEBAR_TIME_BAR_X, GAMEBAR_TIME_BAR_Y), CBox(GAMEBAR_TEXT_X - 5, GAMEBAR_TEXT_Y, GAMEBAR_TEXT_WIDTH, GAMEBAR_TEXT_HEIGHT), 0);
 	this->_list_gamebar.push_back(timeBar);
+
+	GameBar *superBombdBar = new GameBar();
+	superBombdBar->inital(GAMEBAR_SUPERBOMB_BAR_ID, directX->getDevice(), directX->getSpriteHandler(), GAMEBAR_SUPERBOMB_BAR_IMG_FILE, GAMEBAR_WIDTH, GAMEBAR_HEIGHT,
+		D3DXVECTOR2(GAMEBAR_SUPERBOMB_BAR_X, GAMEBAR_SUPERBOMB_BAR_Y), CBox(40, GAMEBAR_TEXT_Y, GAMEBAR_TEXT_WIDTH, GAMEBAR_TEXT_HEIGHT), 0);
+	this->_list_gamebar.push_back(superBombdBar);
 
 	// khởi tạo nhân vật
 	this->_b_bomber_man = new CCharacter(BOMBER_START_X, BOMBER_START_Y);
@@ -72,15 +78,22 @@ void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
 	this->_screen_height = screenHeight;
 	this->_b_camera = new CCamera(screenWidth, screenHeight);
 
-	this->nextMap();
-
+	//this->nextMap();
 	this->_super_boom = true;
+
+	// font
+	this->_gb_text_mgt = new CText();
+	this->_gb_text_mgt->Initialize(directX->getDevice(), TEXT("Times New Roman"), 30, 1);
+
+	// màn hình bắt đầu map và game over
+	this->_game_over_background = LoadSurfaceFromFile(directX->getDevice(), MAP_GAME_OVER_IMG, NULL);
+	this->_start_map_background = LoadSurfaceFromFile(directX->getDevice(), MAP_START_MAP_IMG, NULL);
 }
 
 void PlayMapMgt::resetCurrentMap(){
 	this->_b_live = DEFAULT_LIVE;
-	this->_b_gold = 5000;
-	this->_b_keys = 0;
+	this->_b_gold = 0;
+	this->_b_keys = 5;
 	if (this->_list_map.size() > this->_current_map && this->_current_map >= 0)
 		this->_b_map_times = this->_list_map.at(this->_current_map)->getMaximumTimes();
 	else
@@ -89,6 +102,8 @@ void PlayMapMgt::resetCurrentMap(){
 		this->_b_bomber_man->setPosition(BOMBER_START_X, BOMBER_START_Y);
 		this->_b_bomber_man->setVelocity(0.0f, 0.0f);
 	}
+	this->_is_game_over = false;
+	this->_return_menu = false;
 }
 
 void PlayMapMgt::nextMap(){
@@ -98,7 +113,27 @@ void PlayMapMgt::nextMap(){
 	}
 	else
 		this->_current_map = -1;
+	this->_super_bomb_count = 0;
 	this->resetCurrentMap();
+	this->startMap();
+	for (int i = 0; i < this->_list_gamebar.size(); i++){
+		if (this->_list_gamebar.at(i)->getId() == GAMEBAR_KEY_BAR_ID){
+			((KeyGameBar*)this->_list_gamebar.at(i))->setMaxKeys(this->_list_map.at(this->_current_map)->getNeedKeys());
+			break;
+		}
+			
+	}
+}
+
+void PlayMapMgt::startMap(){
+	this->_is_game_starting = true;
+	this->_time_waiting_start = GetTickCount();
+}
+
+void PlayMapMgt::gameOver(){
+	this->_is_game_over = true;
+	this->_time_waiting_gameover = GetTickCount();
+	this->_return_menu = false;
 }
 
 void PlayMapMgt::activedNormalBomb(int i){
@@ -246,7 +281,43 @@ void PlayMapMgt::activedSuperBomb(int i){
 	this->_list_map.at(this->_current_map)->_list_objects.push_back(bottomFirebang);
 }
 
+void PlayMapMgt::bomberDied(){
+	if (this->_b_bomber_man->isDeading())
+		return;
+
+	this->_b_live -= 1;
+	this->_b_bomber_man->Dead();
+}
+
 void PlayMapMgt::update(int deltaTime, CDirectX * directX){
+	if (!this->_is_game_over && this->_b_map_times < 1)
+	{
+		this->gameOver();
+		return;
+	}
+
+	if (this->_super_bomb_count > 0)
+		this->_super_boom = true;
+	else
+		this->_super_boom = false;
+
+	DWORD now = GetTickCount();
+	if (this->_is_game_over && (now - this->_time_waiting_gameover) > MAP_TIME_WAITING){
+		this->_return_menu = true;
+		return;
+	}
+
+	if (this->_b_live < 0 && !this->_b_bomber_man->isDeading() && !this->_is_game_over){
+		this->gameOver();
+		return;
+	}
+
+	if (this->_is_game_starting && (now - this->_time_waiting_start) > MAP_TIME_WAITING){
+		this->_is_game_starting = false;
+	}
+
+	if (this->_is_game_over || this->_is_game_starting)
+		return;
 
 	if (this->_list_map.size() <= this->_current_map){
 		return;
@@ -261,48 +332,54 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 	// cập nhật các đối tượng trong map
 	// xóa các đối tượng: bom đã nổ, đường nổ đã kết thúc, đường nổ va chạm với tường
 	for (int i = 0; i < this->_list_map.at(this->_current_map)->_list_objects.size(); i++){
-		// kiểm tra bom đã nổ: xóa bom và sinh ra 4 đường đạn tương ứng
-		if (this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_BOMB_NORMAL){
+		int objectID = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId();
+		switch (objectID)
+		{
+		case ID_BOMB_NORMAL:
+			// kiểm tra bom đã nổ: xóa bom và sinh ra 5 đường đạn tương ứng
 			if (((Bomb*)(this->_list_map.at(this->_current_map)->_list_objects.at(i)))->IsFired())
 			{
 				activedNormalBomb(i);
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
-				continue;
+				break;
 			}
+			// cập nhật nếu chưa nổ
 			else
 				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
-		}
-		else if (this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_BOMB_SUPER){
+			break;
+		case ID_BOMB_SUPER:
+			// kiểm tra bom đã nổ: xóa bom và sinh ra 9 đường đạn tương ứng
 			if (((Bomb*)(this->_list_map.at(this->_current_map)->_list_objects.at(i)))->IsFired())
 			{
 				activedSuperBomb(i);
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
-				continue;
+				break;
 			}
+			// cập nhật nếu chưa nổ
 			else
 				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
-		}
-		// kiểm tra các đường nổ: sẽ bị xóa nếu đã nổ xong hoặc va chạm với tường
-		else if (this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_LEFT ||
-			this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_RIGHT ||
-			this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_TOP ||
-			this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_BOT ||
-			this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_CENTER ||
-			this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_MIDLR ||
-			this->_list_map.at(this->_current_map)->_list_objects.at(i)->getId() == ID_FIREBANG_MIDTB){
-			// kiểm tra xem đã nổ xong chưa?
+			break;
+		case ID_FIREBANG_LEFT: case ID_FIREBANG_RIGHT:case ID_FIREBANG_TOP: case ID_FIREBANG_BOT: case ID_FIREBANG_CENTER:
+		case ID_FIREBANG_MIDLR: case ID_FIREBANG_MIDTB:
+		{
+			// kiểm tra xem đã nổ xong chưa? nếu đã nổ xong thì xóa khỏi danh sách
 			if (((FireBang*)(this->_list_map.at(this->_current_map)->_list_objects.at(i)))->isFiredBang())
 			{
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
-				continue;
+				break;
 			}
-			// kiểm tra xem có xảy ra va chạm với tường hay ko?
+
+			// kiểm tra xem có xảy ra va chạm với các đối tượng khác hay ko?
 			bool flag = false;
 			for (int j = 0; j < this->_list_map.at(this->_current_map)->_list_objects.size(); j++){
-				if (this->_list_map.at(this->_current_map)->_list_objects.at(j)->getId() == ID_BRICK){
+
+				int checkObjId = this->_list_map.at(this->_current_map)->_list_objects.at(j)->getId();
+
+				// kiểm tra nếu đường bom nổ sinh ra va chạm với tường nó sẽ bị xóa đi
+				if (checkObjId == ID_BRICK){
 					CBox tileBox1 = this->_list_map.at(this->_current_map)->_list_objects.at(j)->getBounding();
 					CBox tileBox2 = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
 					if (tileBox1.IsIntersectedWith(tileBox2)){
@@ -314,25 +391,263 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				}
 			}
 			if (flag)
-				continue;
+				break;
+
+			for (int j = 0; j < this->_list_map.at(this->_current_map)->_list_objects.size(); j++){
+
+				int checkObjId = this->_list_map.at(this->_current_map)->_list_objects.at(j)->getId();
+
+				// kiểm tra nếu đường đạn nổ sinh ra va chạm với các tilebox
+				if (checkObjId == ID_TILEBOX_NORMAL ||
+					checkObjId == ID_TILEBOX_COIN ||
+					checkObjId == ID_TILEBOX_HEART ||
+					checkObjId == ID_TILEBOX_TIME ||
+					checkObjId == ID_TILEBOX_VELOCITY ||
+					checkObjId == ID_TILEBOX_SUPERBOMB){
+					CBox tileBox1 = this->_list_map.at(this->_current_map)->_list_objects.at(j)->getBounding();
+					CBox tileBox2 = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+					if (tileBox1.IsIntersectedWith(tileBox2)){
+						// sinh ra các hộp quà (nếu có)
+						if (checkObjId != ID_TILEBOX_NORMAL){
+							int giftBoxId = -1;
+							switch (checkObjId){
+							case ID_TILEBOX_COIN:
+							{
+								CGameObject * objAdd = new GiftBox(ID_GIFTBOX_COIN, -1, tileBox1.x, tileBox1.y, tileBox1.w, tileBox1.h,
+									this->_resourceMgt->getSpriteWithID(ID_GIFTBOX_COIN));
+								this->_list_map.at(this->_current_map)->_list_objects.push_back(objAdd);
+								break;
+							}
+							case ID_TILEBOX_HEART:
+							{
+								CGameObject * objAdd = new GiftBox(ID_GIFTBOX_HEART, -1, tileBox1.x, tileBox1.y, tileBox1.w, tileBox1.h,
+									this->_resourceMgt->getSpriteWithID(ID_GIFTBOX_HEART));
+								this->_list_map.at(this->_current_map)->_list_objects.push_back(objAdd);
+								break;
+							}
+							case ID_TILEBOX_TIME:
+							{
+								CGameObject * objAdd = new GiftBox(ID_GIFTBOX_TIME, -1, tileBox1.x, tileBox1.y, tileBox1.w, tileBox1.h,
+									this->_resourceMgt->getSpriteWithID(ID_GIFTBOX_TIME));
+								this->_list_map.at(this->_current_map)->_list_objects.push_back(objAdd);
+								break;
+							}
+							case ID_TILEBOX_VELOCITY:
+							{
+								CGameObject * objAdd = new GiftBox(ID_GIFTBOX_VELOCITY, -1, tileBox1.x, tileBox1.y, tileBox1.w, tileBox1.h,
+									this->_resourceMgt->getSpriteWithID(ID_GIFTBOX_VELOCITY));
+								this->_list_map.at(this->_current_map)->_list_objects.push_back(objAdd);
+								break;
+							}
+							case ID_TILEBOX_SUPERBOMB:
+							{
+								CGameObject * objAdd = new GiftBox(ID_GIFTBOX_SUPERBOMB, -1, tileBox1.x, tileBox1.y, tileBox1.w, tileBox1.h,
+									this->_resourceMgt->getSpriteWithID(ID_GIFTBOX_SUPERBOMB));
+								this->_list_map.at(this->_current_map)->_list_objects.push_back(objAdd);
+								break;
+							}
+							}
+						}
+						this->_list_map.at(this->_current_map)->_list_objects.erase(
+							this->_list_map.at(this->_current_map)->_list_objects.begin() + j);
+						if (j-- <= i)
+							i--;
+					}
+				}
+			}
+
 			// kiểm tra va chạm với bomber man: bomber man sẽ chết
 			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
 			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
 
 			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
-			if (dir != DIRECTION::NONE && !this->_b_bomber_man->_is_dead){
-				this->_b_bomber_man->setPosition(BOMBER_START_X, BOMBER_START_Y);
-				this->_b_bomber_man->setVelocity(0, 0);
-				this->_b_live -= 1;
-				if (this->_b_live < 0){
-					this->_b_bomber_man->Dead();
-				}
+			if (dir != DIRECTION::NONE){
+				this->bomberDied();
 			}
-
 			this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
-
+			break;
 		}
-		else{	// gach
+		case ID_GIFTBOX_COIN:
+		{
+			// kiểm tra va chạm với bomber man: bomber sẽ nhận được  tiền
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				this->_b_gold++;
+				// xóa giftbox này
+				this->_list_map.at(this->_current_map)->_list_objects.erase(
+					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_GIFTBOX_HEART:
+		{
+			// kiểm tra va chạm với bomber man: bomber sẽ nhận được 1 mạng chơi
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				this->_b_live++;
+				// xóa giftbox này
+				this->_list_map.at(this->_current_map)->_list_objects.erase(
+					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_GIFTBOX_TIME:
+		{
+			// kiểm tra va chạm với bomber man: bomber sẽ nhận được thêm 5s
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				this->_b_map_times += 30000;
+				// xóa giftbox này
+				this->_list_map.at(this->_current_map)->_list_objects.erase(
+					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_GIFTBOX_VELOCITY:
+		{
+			// kiểm tra va chạm với bomber man: bomber sẽ nhận được tăng tốc độ
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				this->_b_bomber_man->BootVelocity();
+				// xóa giftbox này
+				this->_list_map.at(this->_current_map)->_list_objects.erase(
+					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_GIFTBOX_KEY:
+		{
+			// kiểm tra va chạm với bomber man: bomber sẽ nhận được 1 chìa khóa
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				this->_b_keys++;
+				this->_b_gold += 50;
+				// xóa giftbox này
+				this->_list_map.at(this->_current_map)->_list_objects.erase(
+					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_GIFTBOX_SUPERBOMB:
+		{
+			// kiểm tra va chạm với bomber man: bomber sẽ nhận được super bom
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				this->_super_bomb_count += 5;
+				// xóa giftbox này
+				this->_list_map.at(this->_current_map)->_list_objects.erase(
+					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_DOOR:
+		{
+			if (this->_b_keys >= this->_list_map.at(this->_current_map)->getNeedKeys()){
+				((DoorObject*)this->_list_map.at(this->_current_map)->_list_objects.at(i))->openDoor();
+			}
+			// kiểm tra va chạm với bomber man: qua màn
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				if (((DoorObject*)this->_list_map.at(this->_current_map)->_list_objects.at(i))->isOpen()){
+					this->nextMap();
+					//this->_list_map.at(this->_current_map)->_list_objects.erase(
+						//this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				}
+				else
+				{
+					switch (dir)
+					{
+					case DIRECTION::LEFT:
+						this->_b_bomber_man->setPosition(tileBox.x - this->_b_bomber_man->getWidth() - 2,
+							this->_b_bomber_man->getPosition().y);
+						this->_b_bomber_man->setVelocity(0, 0);
+						break;
+					case DIRECTION::RIGHT:
+						this->_b_bomber_man->setPosition(tileBox.w + tileBox.x + 2,
+							this->_b_bomber_man->getPosition().y);
+						this->_b_bomber_man->setVelocity(0, 0);
+						break;
+					case DIRECTION::TOP:
+						this->_b_bomber_man->setPosition(this->_b_bomber_man->getPosition().x,
+							tileBox.y + this->_b_bomber_man->getHeight() + 2);
+						this->_b_bomber_man->setVelocity(0, 0);
+						break;
+					case DIRECTION::BOTTOM:
+						this->_b_bomber_man->setPosition(this->_b_bomber_man->getPosition().x, tileBox.y - tileBox.h - 2);
+						this->_b_bomber_man->setVelocity(0, 0);
+						break;
+					default:
+						break;
+					}
+				}
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+		case ID_GHOST:
+		{
+			// kiểm tra va chạm với bomber man: bomber chết
+			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
+			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
+
+			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
+			if (dir != DIRECTION::NONE){
+				//
+
+				//this->_super_boom = true;
+				// xóa giftbox này
+				//this->_list_map.at(this->_current_map)->_list_objects.erase(
+				//	this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				break;
+			}
+			else
+				this->_list_map.at(this->_current_map)->_list_objects.at(i)->update(deltaTime);
+			break;
+		}
+
+		default:
+		{
 			CBox tileBox = this->_list_map.at(this->_current_map)->_list_objects.at(i)->getBounding();
 			float normalX = 0.0f, normalY = 0.0f, collisonTime = -1.0f, xOffset = 0.0f, yOffset = 0.0f;
 			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
@@ -361,37 +676,69 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 			default:
 				break;
 			}
+			break;
 		}
-	}
+		}
+		// cập nhật camera
+		RECT from = _b_camera->GetViewport();
+		int x = this->_b_bomber_man->getPosition().x - (this->_screen_width / 2);
+		int y = this->_b_bomber_man->getPosition().y + (this->_screen_height / 2);
+		if (x < 0)
+			x = 0;
+		if (x>(this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width))
+			x = (this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width);
+		if (y < this->_screen_height)
+			y = this->_screen_height;
+		if (y > this->_list_map.at(this->_current_map)->getMapHeight())
+			y = this->_list_map.at(this->_current_map)->getMapHeight();
+		this->_b_camera->SetPositionCamera(D3DXVECTOR2(x, y));
 
-	// cập nhật camera
-	RECT from = _b_camera->GetViewport();
-	int x = this->_b_bomber_man->getPosition().x - (this->_screen_width / 2);
-	int y = this->_b_bomber_man->getPosition().y + (this->_screen_height / 2);
-	if (x < 0)
-		x = 0;
-	if (x>(this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width))
-		x = (this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width);
-	if (y < this->_screen_height)
-		y = this->_screen_height;
-	if (y > this->_list_map.at(this->_current_map)->getMapHeight())
-		y = this->_list_map.at(this->_current_map)->getMapHeight();
-	this->_b_camera->SetPositionCamera(D3DXVECTOR2(x, y));
+		// cập nhật thông số game
+		this->_b_map_times -= deltaTime;
 
-	// cập nhật game bar
-	for (int i = 0; i < this->_list_gamebar.size(); i++){
-		if (this->_list_gamebar.at(i)->getId() == GAMEBAR_HEART_BAR_ID)
-			this->_list_gamebar.at(i)->updateValue(this->_b_live);
-		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_KEY_BAR_ID)
-			this->_list_gamebar.at(i)->updateValue(this->_b_keys);
-		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_GOLD_BAR_ID)
-			this->_list_gamebar.at(i)->updateValue(this->_b_gold);
-		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_TIME_BAR_ID)
-			this->_list_gamebar.at(i)->updateValue(this->_b_map_times);
+		if (deltaTime > 1000)
+		{
+			this->_b_map_times = 0;
+		}
+		// cập nhật game bar
+		for (int i = 0; i < this->_list_gamebar.size(); i++){
+			if (this->_list_gamebar.at(i)->getId() == GAMEBAR_HEART_BAR_ID)
+				this->_list_gamebar.at(i)->updateValue(this->_b_live);
+			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_KEY_BAR_ID)
+				this->_list_gamebar.at(i)->updateValue(this->_b_keys);
+			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_GOLD_BAR_ID)
+				this->_list_gamebar.at(i)->updateValue(this->_b_gold);
+			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_TIME_BAR_ID)
+				this->_list_gamebar.at(i)->updateValue(this->_b_map_times);
+			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_SUPERBOMB_BAR_ID)
+				this->_list_gamebar.at(i)->updateValue(this->_super_bomb_count);
+		}
 	}
 }
 
 void PlayMapMgt::draw(CDirectX * directX){
+
+	if (this->_is_game_starting){
+		this->_gb_text_mgt->Initialize(directX->getDevice(), TEXT("Times New Roman"), 30, 1);
+		directX->getDevice()->StretchRect(this->_start_map_background, NULL, directX->getBackBuffer(), NULL, D3DTEXF_NONE);
+		std::string mapStr = std::to_string(this->_current_map + 1) + "";
+		char *cstr = new char[mapStr.length() + 1];
+		strcpy(cstr, mapStr.c_str());
+		this->_gb_text_mgt->Print(cstr, 288, 223, D3DCOLOR_XRGB(255, 0, 0), directX->getSpriteHandler(), 0, 0, FA_LEFT);
+		delete[] cstr;
+		return;
+	}
+	if (this->_is_game_over){
+		this->_gb_text_mgt->Initialize(directX->getDevice(), TEXT("Times New Roman"), 18, 1);
+		directX->getDevice()->StretchRect(this->_game_over_background, NULL, directX->getBackBuffer(), NULL, D3DTEXF_NONE);
+		std::string mapStr = std::to_string(this->_b_gold);
+		char *cstr = new char[mapStr.length() + 1];
+		strcpy(cstr, mapStr.c_str());
+		this->_gb_text_mgt->Print(cstr, 288, 335, D3DCOLOR_XRGB(206, 230, 5), directX->getSpriteHandler(), 0, 0, FA_LEFT);
+		delete[] cstr;
+		return;
+	}
+
 	if (this->_list_map.size() <= this->_current_map){
 		return;
 	}
@@ -411,6 +758,10 @@ void PlayMapMgt::addBomb(LPD3DXSPRITE spriteHandler){
 	if (this->_list_map.size() <= this->_current_map){
 		return;
 	}
+
+	if (!this->_b_bomber_man->isAllowAddBomb())
+		return;
+
 	float x = (int)((this->_b_bomber_man->getPosition().x + WIDTH_OBJECT / 2) / WIDTH_OBJECT)*(float)WIDTH_OBJECT;
 	float y = (int)((this->_b_bomber_man->getPosition().y + HEIGHT_OBJECT) / HEIGHT_OBJECT)*(float)HEIGHT_OBJECT;
 	if (this->_super_boom){
@@ -418,6 +769,7 @@ void PlayMapMgt::addBomb(LPD3DXSPRITE spriteHandler){
 			this->_resourceMgt->getSpriteWithID(ID_BOMB_SUPER), SUPER_BOMB_EXIST_TIME);
 		newBomb->inital(NULL);
 		this->_list_map.at(this->_current_map)->_list_objects.push_back(newBomb);
+		this->_super_bomb_count -= 1;
 	}
 	else{
 		Bomb *newBomb = new Bomb(ID_BOMB_NORMAL, x, y, WIDTH_OBJECT, HEIGHT_OBJECT,
@@ -425,6 +777,7 @@ void PlayMapMgt::addBomb(LPD3DXSPRITE spriteHandler){
 		newBomb->inital(NULL);
 		this->_list_map.at(this->_current_map)->_list_objects.push_back(newBomb);
 	}
+	this->_b_bomber_man->AddBomb();
 }
 
 void PlayMapMgt::bomberRunRight(){

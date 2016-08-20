@@ -5,7 +5,7 @@
 class TileBox : public CDynamicGameObject
 {
 public:
-	TileBox(int id, float x, float y, float width, float height, LPD3DXSPRITE spriteHandler, LPWSTR filePath);
+	TileBox(int id, float x, float y, float width, float height, CSprite * spriteResource);
 	~TileBox();
 };
 

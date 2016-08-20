@@ -8,13 +8,13 @@ MenuButton::MenuButton()
 	this->_b_sprite->Reset();
 }
 
-MenuButton::MenuButton(int typeId, int x, int y, LPD3DXSPRITE SpriteHandler, LPWSTR FilePath, int Width, int Height, int Count, int SpritePerRow, bool isMoving)
+MenuButton::MenuButton(int typeId, int x, int y, CSprite * spriteResource, bool isMoving)
 {
 	this->_x = x;
 	this->_y = y;
 	this->_b_type_id = typeId;
 	this->_is_moving = isMoving;
-	this->_b_sprite = new CSprite(SpriteHandler, FilePath, Width, Height, Count, SpritePerRow,NULL);
+	this->_b_sprite = spriteResource;
 	this->_is_selected = false;
 }
 

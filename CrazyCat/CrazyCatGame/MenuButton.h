@@ -14,7 +14,7 @@ private:
 	bool _is_selected;
 public:
 	MenuButton();
-	MenuButton(int typeId, int x, int y, LPD3DXSPRITE SpriteHandler, LPWSTR FilePath, int Width, int Height, int Count, int SpritePerRow, bool isMoving);
+	MenuButton(int typeId, int x, int y, CSprite * spriteResource, bool isMoving);
 	~MenuButton();
 
 	void resetting();

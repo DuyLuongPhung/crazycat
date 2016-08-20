@@ -26,6 +26,8 @@ void ResourceManager::inital(CDirectX * directx){
 		WIDTH_OBJECT, HEIGHT_OBJECT, 1, 1, NULL));
 	this->_list_sprites.push_back(new SpriteResource(ID_DOOR, directx->getSpriteHandler(), IMG_DOOR,
 		WIDTH_OBJECT, HEIGHT_OBJECT, 5, 5, NULL));
+	this->_list_sprites.push_back(new SpriteResource(ID_GIFTBOX_SUPERBOMB, directx->getSpriteHandler(), IMG_GIFTBOX_SUPERBOMB,
+		WIDTH_OBJECT, HEIGHT_OBJECT, 1, 1, NULL));
 
 	this->_list_sprites.push_back(new SpriteResource(ID_BOMB_NORMAL, directx->getSpriteHandler(), IMG_BOMB_NORMAL,
 		WIDTH_OBJECT, HEIGHT_OBJECT, 3, 3, NULL));
@@ -45,6 +47,18 @@ void ResourceManager::inital(CDirectX * directx){
 		WIDTH_OBJECT, HEIGHT_OBJECT, 4, 4, NULL));
 	this->_list_sprites.push_back(new SpriteResource(ID_FIREBANG_CENTER, directx->getSpriteHandler(), IMG_FIREBANG_CENTER,
 		WIDTH_OBJECT, HEIGHT_OBJECT, 4, 4, NULL));
+	
+	// menu
+	this->_list_sprites.push_back(new SpriteResource(ID_MENU_RESOURCE, directx->getSpriteHandler(), MENU_BG_IMG,
+		WIDTH_MENU, HEIGHT_MENU, 1, 1, NULL));
+	this->_list_sprites.push_back(new SpriteResource(MENU_START_BUTTON_ID, directx->getSpriteHandler(), MENU_START_BUTTON_IMG,
+		BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, NULL));
+	this->_list_sprites.push_back(new SpriteResource(MENU_RESUME_BUTTON_ID, directx->getSpriteHandler(), MENU_RESUME_BUTTON_IMG,
+		BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, NULL));
+	this->_list_sprites.push_back(new SpriteResource(MENU_HELP_BUTTON_ID, directx->getSpriteHandler(), MENU_HELP_BUTTON_IMG,
+		BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, NULL));
+	this->_list_sprites.push_back(new SpriteResource(MENU_EXIT_BUTTON_ID, directx->getSpriteHandler(), MENU_EXIT_BUTTON_IMG,
+		BUTTON_WIDTH, BUTTON_HEIGHT, 2, 2, NULL));
 }
 
 CSprite* ResourceManager::getSpriteWithID(int id){

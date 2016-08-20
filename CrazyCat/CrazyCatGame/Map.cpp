@@ -1,7 +1,7 @@
 ﻿#include "Map.h"
 
 
-Map::Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPath, DWORD mapTimes){
+Map::Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPath, DWORD mapTimes, int needkeys){
 	this->_m_background = NULL;
 	this->_m_width = 0;
 	this->_m_height = 0;
@@ -10,6 +10,7 @@ Map::Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPa
 	this->_m_object_info = objectPath;
 	this->_m_title = mapTitle;
 	this->_m_maximum_times = mapTimes;
+	this->_m_keys_need = needkeys;
 }
 
 
@@ -18,9 +19,9 @@ Map::~Map()
 
 }
 
-void Map::inital(LPDIRECT3DDEVICE9 d3ddev){
+void Map::inital(LPDIRECT3DDEVICE9 d3ddev, ResourceManager * resourMgt){
 	readMapTileBackground(d3ddev, this->_m_tile_img, this->_m_tile_txt, this->_m_width, this->_m_height);
-	readMapObjects(this->_m_object_info);
+	readMapObjects(this->_m_object_info, resourMgt);
 }
 
 void Map::update(int deltaTime, D3DXVECTOR2 viewPort){
@@ -250,7 +251,7 @@ void Map::readMapTileBackground(LPDIRECT3DDEVICE9 d3ddev, LPWSTR tilePathImg, LP
 * Đọc file text chứa các đối tượng object trong game
 * Kết quả: danh sách các object được lưu vào quadtree
 ***********************************************************************************/
-void Map::readMapObjects(LPWSTR mapInfoPath){
+void Map::readMapObjects(LPWSTR mapInfoPath, ResourceManager * resourMgt){
 	std::ifstream myfile(mapInfoPath);
 
 	if (myfile.is_open())
@@ -275,127 +276,127 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 		std::vector<TileMap> all_quadnodes;
 		std::vector<QNodeObjects> all_objects;
 
-#pragma region Đọc file text
+		#pragma region Đọc file text
 
-		while (std::getline(myfile, line))
-		{
-			if (line.length() < 1)
-			{
-				mode++;
-				continue;
-			}
-			if (mode == 1)		// đọc thông tin cơ bản của map
-			{
-				if (line[0] == ' ')
-					line.erase(0, 1);
-				size_t pos = 0;
-				std::string token;
-				int j = 0;
-				while ((pos = line.find(" ")) != std::string::npos && j < 6)
+				while (std::getline(myfile, line))
 				{
-					token = line.substr(0, pos);
-					if (j == 0) // map width
-						mWidth = stoi(token);
-					if (j == 1) // map height
-						mHeight = stoi(token);
-					if (j == 2) // row
-						mRows = stoi(token);
-					if (j == 3) // column
-						mCols = stoi(token);
-					if (j == 4) // tile width
-						mTileWidth = stoi(token);
-					if (j == 5) // tile height
-						mTileHeight = stoi(token);
-					line.erase(0, pos + 1);
-					j++;
+					if (line.length() < 1)
+					{
+						mode++;
+						continue;
+					}
+					if (mode == 1)		// đọc thông tin cơ bản của map
+					{
+						if (line[0] == ' ')
+							line.erase(0, 1);
+						size_t pos = 0;
+						std::string token;
+						int j = 0;
+						while ((pos = line.find(" ")) != std::string::npos && j < 6)
+						{
+							token = line.substr(0, pos);
+							if (j == 0) // map width
+								mWidth = stoi(token);
+							if (j == 1) // map height
+								mHeight = stoi(token);
+							if (j == 2) // row
+								mRows = stoi(token);
+							if (j == 3) // column
+								mCols = stoi(token);
+							if (j == 4) // tile width
+								mTileWidth = stoi(token);
+							if (j == 5) // tile height
+								mTileHeight = stoi(token);
+							line.erase(0, pos + 1);
+							j++;
+						}
+					}
+					if (mode == 2)		// đọc thông tin các items
+					{
+						if (line[0] == ' ')
+							line.erase(0, 1);
+						row++;
+						col = 0;
+						size_t pos = 0;
+						std::string token;
+						int j = 0;
+						QNodeItem item;
+
+						while ((pos = line.find(" ")) != std::string::npos && j < 4)
+						{
+							token = line.substr(0, pos);
+							if (j == 0)	// index
+								item.index = stoi(token);
+							if (j == 1)	// type id
+								item.typeId = stoi(token);
+							if (j == 2)	// item width
+								item.w = stoi(token);
+							if (j == 3)	// item height
+								item.h = stoi(token);
+							line.erase(0, pos + 1);
+							j++;
+						}
+						all_items.push_back(item);
+					}
+					if (mode == 3)		// đọc thông tin quad tree node
+					{
+						if (line[0] == ' ')
+							line.erase(0, 1);
+						row++;
+						col = 0;
+						size_t pos = 0;
+						std::string token;
+						int j = 0;
+						TileMap qnode;
+						while ((pos = line.find(" ")) != std::string::npos && j < 5)
+						{
+							token = line.substr(0, pos);
+							if (j == 0) // node id
+								qnode.id = stoi(token);
+							if (j == 1) // x
+								qnode.x = stoi(token);
+							if (j == 2) // y
+								qnode.y = stoi(token);
+							if (j == 3) // width
+								qnode.w = stoi(token);
+							if (j == 4) // height
+								qnode.h = stoi(token);
+
+							line.erase(0, pos + 1);
+							j++;
+						}
+						all_quadnodes.push_back(qnode);
+					}
+					if (mode == 4)		// đọc thông tin các objects trong map
+					{
+
+						if (line[0] == ' ')
+							line.erase(0, 1);
+						size_t pos = 0;
+						std::string token;
+						int j = 0;
+						QNodeObjects qobject;
+						while ((pos = line.find(" ")) != std::string::npos && j < 4)
+						{
+							token = line.substr(0, pos);
+							if (j == 0)	// index
+								qobject.index = stoi(token);
+							if (j == 1)	// node id
+								qobject.node_id = stoi(token);
+							if (j == 2)	// x
+								qobject.x = stoi(token);
+							if (j == 3)	// y
+								qobject.y = stoi(token);
+
+							line.erase(0, pos + 1);
+							j++;
+						}
+						all_objects.push_back(qobject);
+					}
+
 				}
-			}
-			if (mode == 2)		// đọc thông tin các items
-			{
-				if (line[0] == ' ')
-					line.erase(0, 1);
-				row++;
-				col = 0;
-				size_t pos = 0;
-				std::string token;
-				int j = 0;
-				QNodeItem item;
 
-				while ((pos = line.find(" ")) != std::string::npos && j < 4)
-				{
-					token = line.substr(0, pos);
-					if (j == 0)	// index
-						item.index = stoi(token);
-					if (j == 1)	// type id
-						item.typeId = stoi(token);
-					if (j == 2)	// item width
-						item.w = stoi(token);
-					if (j == 3)	// item height
-						item.h = stoi(token);
-					line.erase(0, pos + 1);
-					j++;
-				}
-				all_items.push_back(item);
-			}
-			if (mode == 3)		// đọc thông tin quad tree node
-			{
-				if (line[0] == ' ')
-					line.erase(0, 1);
-				row++;
-				col = 0;
-				size_t pos = 0;
-				std::string token;
-				int j = 0;
-				TileMap qnode;
-				while ((pos = line.find(" ")) != std::string::npos && j < 5)
-				{
-					token = line.substr(0, pos);
-					if (j == 0) // node id
-						qnode.id = stoi(token);
-					if (j == 1) // x
-						qnode.x = stoi(token);
-					if (j == 2) // y
-						qnode.y = stoi(token);
-					if (j == 3) // width
-						qnode.w = stoi(token);
-					if (j == 4) // height
-						qnode.h = stoi(token);
-
-					line.erase(0, pos + 1);
-					j++;
-				}
-				all_quadnodes.push_back(qnode);
-			}
-			if (mode == 4)		// đọc thông tin các objects trong map
-			{
-
-				if (line[0] == ' ')
-					line.erase(0, 1);
-				size_t pos = 0;
-				std::string token;
-				int j = 0;
-				QNodeObjects qobject;
-				while ((pos = line.find(" ")) != std::string::npos && j < 4)
-				{
-					token = line.substr(0, pos);
-					if (j == 0)	// index
-						qobject.index = stoi(token);
-					if (j == 1)	// node id
-						qobject.node_id = stoi(token);
-					if (j == 2)	// x
-						qobject.x = stoi(token);
-					if (j == 3)	// y
-						qobject.y = stoi(token);
-
-					line.erase(0, pos + 1);
-					j++;
-				}
-				all_objects.push_back(qobject);
-			}
-
-		}
-
-#pragma endregion
+		#pragma endregion
 
 		myfile.close();
 		for (int j = 0; j < all_objects.size(); j++){
@@ -414,6 +415,26 @@ void Map::readMapObjects(LPWSTR mapInfoPath){
 			if (typeId == ID_BRICK)
 			{
 				CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
+				all_objects.erase(all_objects.begin() + j--);
+				this->_list_objects.push_back(objAdd);
+			}
+			if (typeId == ID_TILEBOX_NORMAL ||
+				typeId == ID_TILEBOX_COIN ||
+				typeId == ID_TILEBOX_HEART ||
+				typeId == ID_TILEBOX_TIME ||
+				typeId == ID_TILEBOX_VELOCITY ||
+				typeId == ID_TILEBOX_SUPERBOMB){
+				CGameObject * objAdd = new TileBox(typeId, x, y, w, h, resourMgt->getSpriteWithID(ID_TILEBOX_NORMAL));
+				all_objects.erase(all_objects.begin() + j--);
+				this->_list_objects.push_back(objAdd);
+			}
+			if (typeId == ID_GIFTBOX_KEY){
+				CGameObject * objAdd = new GiftBox(typeId, -1, x, y, w, h, resourMgt->getSpriteWithID(ID_GIFTBOX_KEY));
+				all_objects.erase(all_objects.begin() + j--);
+				this->_list_objects.push_back(objAdd);
+			}
+			if (typeId == ID_DOOR){
+				CGameObject * objAdd = new DoorObject(typeId, x, y, w, h, resourMgt->getSpriteWithID(ID_DOOR));
 				all_objects.erase(all_objects.begin() + j--);
 				this->_list_objects.push_back(objAdd);
 			}

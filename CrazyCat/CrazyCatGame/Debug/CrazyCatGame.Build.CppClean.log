@@ -1,6 +1,5 @@
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\vc120.pdb
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\vc120.idb
-e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\gamemenu.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\gameobject.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\ghost.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\giftbox.obj
@@ -19,6 +18,7 @@ e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\staticgameobj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\sweptaabb.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\text.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\tilebox.obj
+e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\timegamebar.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\utils.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\bomb.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\box.obj
@@ -28,10 +28,13 @@ e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\character.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\collision.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\crazycat.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\directx.obj
+e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\doorobject.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\dynamicgameobject.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\firebang.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\game.obj
 e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\gamebar.obj
+e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\gamemenu.obj
+e:\nhapmongame\project\github\crazycat\crazycat\crazycatgame\debug\keygamebar.obj
 e:\nhapmongame\project\github\crazycat\crazycat\debug\crazycatgame.ilk
 e:\nhapmongame\project\github\crazycat\crazycat\debug\crazycatgame.exe
 e:\nhapmongame\project\github\crazycat\crazycat\debug\crazycatgame.pdb

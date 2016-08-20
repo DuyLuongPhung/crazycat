@@ -90,6 +90,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CrazyCat.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="DoorObject.cpp" />
     <ClCompile Include="DynamicGameObject.cpp" />
     <ClCompile Include="FireBang.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="GiftBox.cpp" />
     <ClCompile Include="HelpMgt.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="KeyGameBar.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuButton.cpp" />
@@ -113,6 +115,7 @@
     <ClCompile Include="SweptAABB.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TileBox.cpp" />
+    <ClCompile Include="TimeGameBar.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +128,7 @@
     <ClInclude Include="CONST.h" />
     <ClInclude Include="CrazyCat.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="DoorObject.h" />
     <ClInclude Include="DynamicGameObject.h" />
     <ClInclude Include="FireBang.h" />
     <ClInclude Include="Game.h" />
@@ -135,6 +139,7 @@
     <ClInclude Include="GiftBox.h" />
     <ClInclude Include="HelpMgt.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="KeyGameBar.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuButton.h" />
     <ClInclude Include="PlayMapMgt.h" />
@@ -147,6 +152,7 @@
     <ClInclude Include="SweptAABB.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TileBox.h" />
+    <ClInclude Include="TimeGameBar.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

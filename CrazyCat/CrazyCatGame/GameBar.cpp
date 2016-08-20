@@ -30,6 +30,8 @@ void GameBar::draw(LPD3DXSPRITE spriteHandler){
 	// vẽ nền
 	this->_gb_background->Render(this->_gb_position.x,this->_gb_position.y);
 	// vẽ giá trị
+	if (this->_gb_value < 0)
+		this->_gb_value = 0;
 	_itoa_s(this->_gb_value, valueBuffer, 30, 10);
 	this->_gb_text_mgt->Print(valueBuffer, this->_gb_print_text.x + this->_gb_position.x, this->_gb_print_text.y + this->_gb_position.y,
 		D3DCOLOR_XRGB(65, 44, 23), spriteHandler, 0, 0, FA_LEFT);

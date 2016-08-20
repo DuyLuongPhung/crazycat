@@ -14,6 +14,7 @@ CGame(hInstance, name, mode, is_fullscreen, frame_rate)
 	this->_g_helpmgt = NULL;
 	this->_g_mapmgt = NULL;
 	this->_g_menu = NULL;
+	this->_resourceMgt = NULL;
 }
 
 
@@ -22,23 +23,37 @@ CrazyCat::~CrazyCat()
 	SAFE_DELETE(this->_g_helpmgt);
 	SAFE_DELETE(this->_g_mapmgt);
 	SAFE_DELETE(this->_g_menu);
+	SAFE_DELETE(this->_resourceMgt);
 }
+
 bool intersec = false;
+
+int loop = 0;
 void CrazyCat::Update(int delta)
 {
 	if (this->_g_currrent_mode == GAME_MODE::PlayMap){
+		if (this->_g_mapmgt->isReturnMenu()){
+			this->_g_menu->resetMenu(false);
+			this->_g_currrent_mode = GAME_MODE::PlayMenu;
+			return;
+		}
+
 		this->_g_mapmgt->update(delta, this->_directXDivice);
 	}
 }
 
 void CrazyCat::LoadResources(LPDIRECT3DDEVICE9 d3ddv)
 {
+	// load sprite resource cho các đối tượng
+	this->_resourceMgt = new ResourceManager();
+	this->_resourceMgt->inital(this->_directXDivice);
+
 	this->_g_helpmgt = new HelpMgt(this->_directXDivice->getDevice(), L"Help.png");
 
-	this->_g_menu = new GameMenu(this->_directXDivice->getDevice(), 32, 10, 320, 416, 4, L"GameMenu_bg.png");
-	this->_g_menu->initalPauseMenu(this->_directXDivice->getSpriteHandler());
+	this->_g_menu = new GameMenu(MENU_START_X, MENU_START_Y, WIDTH_MENU, HEIGHT_MENU);
+	this->_g_menu->inital(this->_directXDivice->getSpriteHandler(), this->_resourceMgt, false);
 
-	this->_g_mapmgt = new PlayMapMgt();
+	this->_g_mapmgt = new PlayMapMgt(this->_resourceMgt);
 	this->_g_mapmgt->inital(this->_directXDivice, this->_screenWidth, this->_screenHeight);
 
 
@@ -62,6 +77,8 @@ void CrazyCat::RenderFrame(LPDIRECT3DDEVICE9 d3ddv, int t)
 
 void CrazyCat::ProcessInput(LPDIRECT3DDEVICE9 d3ddv, int t)
 {
+	if (this->_g_mapmgt->isWaiting())
+		return;
 	if (_keyboardDevice->IsKeyDown(DIK_RIGHT))
 	{
 		this->_g_mapmgt->bomberRunRight();
@@ -101,9 +118,12 @@ void CrazyCat::OnKeyDown(int KeyCode)
 			}
 			else{
 				_g_currrent_mode = GAME_MODE::PlayMap;
+				this->_g_mapmgt->nextMap();
 			}
 		}
 		else if (_g_currrent_mode == GAME_MODE::PlayMap){
+			if (this->_g_mapmgt->isWaiting())
+				return;
 			this->AddBomb();
 		}
 		break;
@@ -126,7 +146,25 @@ void CrazyCat::OnKeyDown(int KeyCode)
 			this->_is_exit = true;
 		}
 		else if (_g_currrent_mode == GAME_MODE::PlayMap){
+			if (this->_g_mapmgt->isWaiting())
+				return;
 			_g_currrent_mode = GAME_MODE::PlayMenu;
+		}
+
+		break;
+	}
+
+	case DIK_C:
+	{
+		if (_g_currrent_mode == GAME_MODE::PlayHelp)
+		{
+			_g_currrent_mode = GAME_MODE::PlayMenu;
+		}
+		else if (_g_currrent_mode == GAME_MODE::PlayMenu){
+			this->_is_exit = true;
+		}
+		else if (_g_currrent_mode == GAME_MODE::PlayMap){
+			this->_g_mapmgt->gameOver();
 		}
 
 		break;

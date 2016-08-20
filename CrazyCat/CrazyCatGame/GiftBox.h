@@ -10,7 +10,7 @@ private:
 	DWORD	_gi_start_time;		// thời gian bắt đầu hiện hộp quà
 	bool	_gi_exist;			// hộp quà còn tồn tại hay không? 
 public:
-	GiftBox(int id, DWORD existTimes, float x, float y, float width, float height, LPD3DXSPRITE spriteHandler, LPWSTR filePath);
+	GiftBox(int id, DWORD existTimes, float x, float y, float width, float height, CSprite * spriteResource);
 	~GiftBox();
 
 	bool				isExist(){ return this->_gi_exist; }

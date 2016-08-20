@@ -27,6 +27,8 @@ public:
 
 	int getWidth();
 	int getHeight();
+	int getCountSprite(){ return this->_Count; }
+	bool isHighestSprite(){ return (this->_Index >= this->_Count-1); }
 
 	// Render current sprite at location (X,Y) at the target surface
 	void Render(D3DXVECTOR2 viewPort, int X, int Y);
