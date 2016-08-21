@@ -49,7 +49,7 @@ void CrazyCat::LoadResources(LPDIRECT3DDEVICE9 d3ddv)
 	this->_resourceMgt = new ResourceManager();
 	this->_resourceMgt->inital(this->_directXDivice);
 
-	this->_g_helpmgt = new HelpMgt(this->_directXDivice->getDevice(), L"Help.png");
+	this->_g_helpmgt = new HelpMgt(this->_directXDivice->getDevice(), HELP_IMG);
 
 	this->_g_menu = new GameMenu(MENU_START_X, MENU_START_Y, WIDTH_MENU, HEIGHT_MENU);
 	this->_g_menu->inital(this->_directXDivice->getSpriteHandler(), this->_resourceMgt, false);
