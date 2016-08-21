@@ -75,6 +75,8 @@ private:
 	LPWSTR		_m_object_info;					// file thông tin map: thông tin cơ bản, quadtree, objects
 
 	int			_m_keys_need;
+	CQuadTree *_quad_tree;
+
 public:
 	std::vector<CGameObject*> _list_objects;	// danh sách các objects trong map
 
@@ -90,7 +92,7 @@ public:
 	void			addNewObjects(CGameObject * insertObject);
 
 	void			inital(LPDIRECT3DDEVICE9 d3ddev, ResourceManager * resourMgt);
-	void			update(int deltaTime, D3DXVECTOR2 nextViewPort);
+	void			update(D3DXVECTOR2 viewPort, int scrWidth, int scrHeight);
 	void			draw(CDirectX * directX, D3DXVECTOR2 viewPort, int gamesceneWidth, int gamesceneHeight);
 
 private:

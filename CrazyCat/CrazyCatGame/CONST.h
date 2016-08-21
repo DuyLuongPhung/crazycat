@@ -73,7 +73,7 @@
 #define BOMBER_DEAD_IMG L"resources\\images\\bomber_dead.png"
 #define BOMBER_ANIMATE_RATE 16
 #define BOMBER_START_X  1504//70
-#define BOMBER_START_Y  96//1020
+#define BOMBER_START_Y  128//1020
 #define BOMBER_WIDTH 18
 #define BOMBER_HEIGHT 18
 #define BOMBER_HEIGHT_HEAD 9

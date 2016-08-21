@@ -361,6 +361,8 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 		return;
 	}
 
+	this->_list_map.at(this->_current_map)->update(this->_b_camera->GetPositionCamera(), this->_screen_width, this->_screen_height);
+
 	// cập nhật bomber man
 	this->_b_bomber_man->update(deltaTime);
 
@@ -723,40 +725,40 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 			break;
 		}
 		}
-		// cập nhật camera
-		RECT from = _b_camera->GetViewport();
-		int x = this->_b_bomber_man->getPosition().x - (this->_screen_width / 2);
-		int y = this->_b_bomber_man->getPosition().y + (this->_screen_height / 2);
-		if (x < 0)
-			x = 0;
-		if (x>(this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width))
-			x = (this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width);
-		if (y < this->_screen_height)
-			y = this->_screen_height;
-		if (y > this->_list_map.at(this->_current_map)->getMapHeight())
-			y = this->_list_map.at(this->_current_map)->getMapHeight();
-		this->_b_camera->SetPositionCamera(D3DXVECTOR2(x, y));
+	}
+	// cập nhật camera
+	RECT from = _b_camera->GetViewport();
+	int x = this->_b_bomber_man->getPosition().x - (this->_screen_width / 2);
+	int y = this->_b_bomber_man->getPosition().y + (this->_screen_height / 2);
+	if (x < 0)
+		x = 0;
+	if (x>(this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width))
+		x = (this->_list_map.at(this->_current_map)->getMapWidth() - this->_screen_width);
+	if (y < this->_screen_height)
+		y = this->_screen_height;
+	if (y > this->_list_map.at(this->_current_map)->getMapHeight())
+		y = this->_list_map.at(this->_current_map)->getMapHeight();
+	this->_b_camera->SetPositionCamera(D3DXVECTOR2(x, y));
 
-		// cập nhật thông số game
-		this->_b_map_times -= deltaTime;
+	// cập nhật thông số game
+	this->_b_map_times -= deltaTime;
 
-		if (deltaTime > 1000)
-		{
-			this->_b_map_times = 0;
-		}
-		// cập nhật game bar
-		for (int i = 0; i < this->_list_gamebar.size(); i++){
-			if (this->_list_gamebar.at(i)->getId() == GAMEBAR_HEART_BAR_ID)
-				this->_list_gamebar.at(i)->updateValue(this->_b_live);
-			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_KEY_BAR_ID)
-				this->_list_gamebar.at(i)->updateValue(this->_b_keys);
-			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_GOLD_BAR_ID)
-				this->_list_gamebar.at(i)->updateValue(this->_b_gold);
-			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_TIME_BAR_ID)
-				this->_list_gamebar.at(i)->updateValue(this->_b_map_times);
-			else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_SUPERBOMB_BAR_ID)
-				this->_list_gamebar.at(i)->updateValue(this->_super_bomb_count);
-		}
+	if (deltaTime > 1000)
+	{
+		this->_b_map_times = 0;
+	}
+	// cập nhật game bar
+	for (int i = 0; i < this->_list_gamebar.size(); i++){
+		if (this->_list_gamebar.at(i)->getId() == GAMEBAR_HEART_BAR_ID)
+			this->_list_gamebar.at(i)->updateValue(this->_b_live);
+		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_KEY_BAR_ID)
+			this->_list_gamebar.at(i)->updateValue(this->_b_keys);
+		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_GOLD_BAR_ID)
+			this->_list_gamebar.at(i)->updateValue(this->_b_gold);
+		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_TIME_BAR_ID)
+			this->_list_gamebar.at(i)->updateValue(this->_b_map_times);
+		else if (this->_list_gamebar.at(i)->getId() == GAMEBAR_SUPERBOMB_BAR_ID)
+			this->_list_gamebar.at(i)->updateValue(this->_super_bomb_count);
 	}
 }
 

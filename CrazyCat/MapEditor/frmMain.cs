@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using MapEditor.QuadTree;
 
 namespace MapEditor
 {
@@ -519,16 +520,23 @@ namespace MapEditor
                 }
                 strWriter.WriteLine();
 
-                QuadTree.QuadTreeManager manager = new QuadTree.QuadTreeManager(_screenWidth, _screenHeight);
-                manager.SetAllData(_allItemAdded, new Rectangle(0, 0, (_columns * _tileWidth), (_rows * _tileHeight)));
-                QuadNode root = manager.Tree.Root;
+                int mapWidth = _background.Width;
+                int mapHeight = _background.Height;
 
+                QuadTree.QuadTree quadTree = new QuadTree.QuadTree();
+                foreach (var item in _allItemAdded)
+                {
+                    item.ItemRectangle.Y = mapHeight - item.ItemRectangle.Y;
+                }
+                quadTree.SetAllData(_allItemAdded, new Rectangle(0, _screenHeight, mapWidth, mapHeight));
                 // write node
-                ExportQuadTreeNode(root, strWriter);
+                ExportQuadTreeNode(quadTree.Root, strWriter);
                 strWriter.WriteLine();
 
                 // write objects
-                ExportQuadTreeObject(root, strWriter);
+                List<ItemObject> listResult = new List<ItemObject>();
+                quadTree.Root.GetAllObjects(ref listResult);
+                ExportQuadTreeObject(listResult, strWriter);
                 strWriter.WriteLine();
                 strWriter.Close();
                 return true;
@@ -539,11 +547,10 @@ namespace MapEditor
             }
         }
 
-        private bool ExportQuadTreeNode(QuadNode root, StreamWriter strWriter)
+        private bool ExportQuadTreeNode(QuadNode root , StreamWriter strWriter)
         {
             if (root == null)
                 return false;
-
             //write node's information
             strWriter.WriteLine(""
                 + root.Id + " "                 // root id
@@ -563,31 +570,18 @@ namespace MapEditor
             return true;
         }
 
-        private bool ExportQuadTreeObject(QuadNode root, StreamWriter strWriter)
+        private bool ExportQuadTreeObject(List<ItemObject> listResult, StreamWriter strWriter)
         {
-            if (root == null)
-                return false;
             //write object's information
-            int mapHeight = _background.Height;
-
-            List<ItemObject> allItem = root.GetAllObjects();
-            for (int i = 0; i < allItem.Count; i++)
+            for (int i = 0; i < listResult.Count; i++)
             {
                 strWriter.WriteLine(""
-                    + allItem[i].ItemInfoIndex + " "               // item index
+                    + listResult[i].ItemInfoIndex + " "               // item index
                     + root.Id + " "                             // node id 
                     + allItem[i].ItemRectangle.X + " "          // position X
-                    + (mapHeight - allItem[i].ItemRectangle.Y) + " "          // position Y
+                    + allItem[i].ItemRectangle.Y + " "          // position Y
                     );
             }
-            if (root.NodeLT != null)
-                ExportQuadTreeObject(root.NodeLT, strWriter);     // save objects in left-top node
-            if (root.NodeLB != null)
-                ExportQuadTreeObject(root.NodeLB, strWriter);     // save objects in left-bottom node
-            if (root.NodeRB != null)
-                ExportQuadTreeObject(root.NodeRB, strWriter);     // save objects in right-bottom node
-            if (root.NodeRT != null)
-                ExportQuadTreeObject(root.NodeRT, strWriter);     // save objects in right-top node
             return true;
         }
 
@@ -640,7 +634,7 @@ namespace MapEditor
                 strWriter.WriteLine();
 
                  // basic information
-                strWriter.WriteLine(resultBitmap.Count + "");
+                strWriter.WriteLine(resultBitmap.Count + " ");
                 strWriter.WriteLine();
 
                 int imgHeight = (resultBitmap.Count / _imageSaveInRow + 1) * (resultBitmap[0].Height);

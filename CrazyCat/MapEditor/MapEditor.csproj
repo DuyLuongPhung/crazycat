@@ -50,9 +50,9 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="ObjectSave.cs" />
     <Compile Include="QuadTree\QuadNode.cs" />
     <Compile Include="QuadTree\QuadTree.cs" />
-    <Compile Include="QuadTree\QuadTreeManager.cs" />
     <Compile Include="UtilsForm\AddNewItem.cs">
       <SubType>Form</SubType>
     </Compile>

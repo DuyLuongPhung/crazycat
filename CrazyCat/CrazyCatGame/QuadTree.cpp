@@ -21,20 +21,29 @@ CQuadTree::~CQuadTree()
 	SAFE_DELETE(this->_q_root);
 }
 
+void CQuadTree::addNode(CQuadNode* node){
+	this->_q_root->AddNode(node);
+}
+
 void CQuadTree::SetQuadTreeData(std::vector<CQuadNode*>* allNodes)
 {
-	int widthLeft, heightTop, widthRight, heightBottom;
-	CQuadNode nodeRT, nodeLT, nodeLB, nodeRB;
-
 	std::sort(allNodes->begin(), allNodes->end(), IDGreater);
 	
 	for (int i = 0; i < allNodes->size(); i++){
 		if (i == 0){
-			this->_q_root = allNodes->at(0);
+			this->_q_root = (*allNodes).at(i);
 			continue;
 		}
-		this->_q_root->AddNode(allNodes->at(i));
+		this->addNode((*allNodes).at(i));
 	}
+}
 
-	
+void CQuadTree::addObject(CGameObject* object){
+	this->_q_root->AddObject(object);
+}
+
+std::vector<CGameObject*> CQuadTree::getObjectList(CBox viewBox){
+	std::vector<CGameObject*>* objects = new std::vector<CGameObject*>[1];
+	this->_q_root->GetObjectsIn(viewBox, objects);
+	return (*objects);
 }

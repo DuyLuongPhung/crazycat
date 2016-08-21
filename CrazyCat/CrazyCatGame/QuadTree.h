@@ -2,6 +2,7 @@
 
 #include "QuadNode.h"
 #include "CONST.h"
+#include "GameObject.h"
 
 class CQuadTree
 {
@@ -16,5 +17,8 @@ public:
 	void getObjectsIn(RECT viewport, std::vector<CGameObject*> objects);
 	void addNode(CQuadNode* node);
 	void SetQuadTreeData(std::vector<CQuadNode*>* allNodes);
+	void addObject(CGameObject* object);
+	std::vector<CGameObject*> getObjectList(CBox viewBox);
+
 };
 

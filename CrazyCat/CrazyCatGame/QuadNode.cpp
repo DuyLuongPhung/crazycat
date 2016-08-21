@@ -36,19 +36,12 @@ CQuadNode::~CQuadNode()
 	SAFE_DELETE(_nodeRB);
 }
 
-void CQuadNode::GetObjectsIn(RECT viewport, std::vector<CGameObject*>* objects)
+void CQuadNode::GetObjectsIn(CBox objBox, std::vector<CGameObject*>* objects)
 {
 	CBox thisBox = GetBox();
-	CBox objBox;
-	objBox.x = viewport.left;
-	objBox.y = viewport.top;
-	objBox.w = viewport.right - viewport.left;
-	objBox.h = viewport.top - viewport.bottom;
-	objBox.vx = objBox.vy = 0.0f;
-
 	if (thisBox.IsIntersectedWith(objBox))
 	{
-		if (!_nodeLT && !_nodeRT && !_nodeLB && !_nodeRB)
+		if (this->isLeaf())
 		{
 			if (_list_objects.size() > 0)
 			{
@@ -61,12 +54,16 @@ void CQuadNode::GetObjectsIn(RECT viewport, std::vector<CGameObject*>* objects)
 		}
 		else
 		{
-			_nodeLT->GetObjectsIn(viewport, objects);
-			_nodeRT->GetObjectsIn(viewport, objects);
-			_nodeLB->GetObjectsIn(viewport, objects);
-			_nodeRB->GetObjectsIn(viewport, objects);
+			_nodeLT->GetObjectsIn(objBox, objects);
+			_nodeRT->GetObjectsIn(objBox, objects);
+			_nodeLB->GetObjectsIn(objBox, objects);
+			_nodeRB->GetObjectsIn(objBox, objects);
 		}
 	}
+}
+
+bool CQuadNode::isLeaf(){
+	return (!this->_nodeLB && !this->_nodeLT && !this->_nodeRB && !this->_nodeRT);
 }
 
 void CQuadNode::AddNode(CQuadNode* node)
@@ -103,6 +100,29 @@ void CQuadNode::AddNode(CQuadNode* node)
 	if (_nodeLB != NULL)
 		_nodeLB->AddNode(node);
 }
+
+void CQuadNode::AddObject(CGameObject* object)
+{
+	if (this->isLeaf())
+	{
+		CBox box1 = this->GetBox();
+		CBox box2 = object->getBounding();
+		if (box1.IsIntersectedWith(box2))
+			this->_list_objects.push_back(object);
+	}
+	if (_nodeRT != NULL)
+		_nodeRT->AddObject(object);
+
+	if (_nodeRT != NULL)
+		_nodeRT->AddObject(object);
+
+	if (_nodeRB != NULL)
+		_nodeRT->AddObject(object);
+
+	if (_nodeLB != NULL)
+		_nodeRT->AddObject(object);
+}
+
 
 CBox CQuadNode::GetBox()
 {

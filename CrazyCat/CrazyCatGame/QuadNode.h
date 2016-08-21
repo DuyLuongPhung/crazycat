@@ -16,10 +16,13 @@ public:
 	CQuadNode(int id, D3DXVECTOR2 position, D3DXVECTOR2 size, std::vector<CGameObject*> listObjects);
 	~CQuadNode();
 
-	void GetObjectsIn(RECT viewport, std::vector<CGameObject*>* objects);
+	void GetObjectsIn(CBox viewport, std::vector<CGameObject*>* objects);
 	void AddNode(CQuadNode* node);
+	void AddObject(CGameObject* object);
 	CBox GetBox();
 	int getId(){ return this->_id; }
+
+	bool isLeaf();
 
 private:
 	CQuadNode* _nodeLT;		// left - top		- %1

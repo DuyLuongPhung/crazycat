@@ -11,6 +11,8 @@ Map::Map(char* mapTitle, LPWSTR tilePathImg, LPWSTR tilePathTxt, LPWSTR objectPa
 	this->_m_title = mapTitle;
 	this->_m_maximum_times = mapTimes;
 	this->_m_keys_need = needkeys;
+	this->_quad_tree = NULL;
+	this->_list_objects.clear();
 }
 
 
@@ -20,12 +22,16 @@ Map::~Map()
 }
 
 void Map::inital(LPDIRECT3DDEVICE9 d3ddev, ResourceManager * resourMgt){
+	this->_list_objects.clear();
 	readMapTileBackground(d3ddev, this->_m_tile_img, this->_m_tile_txt, this->_m_width, this->_m_height);
 	readMapObjects(this->_m_object_info, resourMgt);
 }
 
-void Map::update(int deltaTime, D3DXVECTOR2 viewPort){
-	
+void Map::update(D3DXVECTOR2 viewPort, int scrWidth, int scrHeight){
+	CBox viewBox(viewPort.x, viewPort.y, scrWidth, scrHeight);
+
+	this->_list_objects.clear();
+	this->_list_objects = this->_quad_tree->getObjectList(viewBox);
 }
 
 void Map::addNewObjects(CGameObject * insertObject){
@@ -34,7 +40,7 @@ void Map::addNewObjects(CGameObject * insertObject){
 
 void Map::draw(CDirectX * directX, D3DXVECTOR2 viewPort, int gamesceneWidth, int gamesceneHeight){
 
-	#pragma region Background
+#pragma region Background
 	// lấy khung hình cho frame hiện tại
 	RECT srcRect;
 	srcRect.left = viewPort.x;
@@ -51,13 +57,13 @@ void Map::draw(CDirectX * directX, D3DXVECTOR2 viewPort, int gamesceneWidth, int
 
 	// vẽ khung hình lên backbuffer
 	directX->getDevice()->StretchRect(this->_m_background, &srcRect, directX->getBackBuffer(), &desRect, D3DTEXF_NONE);
-	#pragma endregion
-	
-	#pragma region Object
+#pragma endregion
+
+#pragma region Object
 	for (int i = 0; i < this->_list_objects.size(); i++){
 		this->_list_objects.at(i)->draw(viewPort);
 	}
-	#pragma endregion
+#pragma endregion
 }
 
 /**********************************************************************************
@@ -276,130 +282,130 @@ void Map::readMapObjects(LPWSTR mapInfoPath, ResourceManager * resourMgt){
 		std::vector<TileMap> all_quadnodes;
 		std::vector<QNodeObjects> all_objects;
 
-		#pragma region Đọc file text
+#pragma region Đọc file text
 
-				while (std::getline(myfile, line))
+		while (std::getline(myfile, line))
+		{
+			if (line.length() < 1)
+			{
+				mode++;
+				continue;
+			}
+			if (mode == 1)		// đọc thông tin cơ bản của map
+			{
+				if (line[0] == ' ')
+					line.erase(0, 1);
+				size_t pos = 0;
+				std::string token;
+				int j = 0;
+				while ((pos = line.find(" ")) != std::string::npos && j < 6)
 				{
-					if (line.length() < 1)
-					{
-						mode++;
-						continue;
-					}
-					if (mode == 1)		// đọc thông tin cơ bản của map
-					{
-						if (line[0] == ' ')
-							line.erase(0, 1);
-						size_t pos = 0;
-						std::string token;
-						int j = 0;
-						while ((pos = line.find(" ")) != std::string::npos && j < 6)
-						{
-							token = line.substr(0, pos);
-							if (j == 0) // map width
-								mWidth = stoi(token);
-							if (j == 1) // map height
-								mHeight = stoi(token);
-							if (j == 2) // row
-								mRows = stoi(token);
-							if (j == 3) // column
-								mCols = stoi(token);
-							if (j == 4) // tile width
-								mTileWidth = stoi(token);
-							if (j == 5) // tile height
-								mTileHeight = stoi(token);
-							line.erase(0, pos + 1);
-							j++;
-						}
-					}
-					if (mode == 2)		// đọc thông tin các items
-					{
-						if (line[0] == ' ')
-							line.erase(0, 1);
-						row++;
-						col = 0;
-						size_t pos = 0;
-						std::string token;
-						int j = 0;
-						QNodeItem item;
-
-						while ((pos = line.find(" ")) != std::string::npos && j < 4)
-						{
-							token = line.substr(0, pos);
-							if (j == 0)	// index
-								item.index = stoi(token);
-							if (j == 1)	// type id
-								item.typeId = stoi(token);
-							if (j == 2)	// item width
-								item.w = stoi(token);
-							if (j == 3)	// item height
-								item.h = stoi(token);
-							line.erase(0, pos + 1);
-							j++;
-						}
-						all_items.push_back(item);
-					}
-					if (mode == 3)		// đọc thông tin quad tree node
-					{
-						if (line[0] == ' ')
-							line.erase(0, 1);
-						row++;
-						col = 0;
-						size_t pos = 0;
-						std::string token;
-						int j = 0;
-						TileMap qnode;
-						while ((pos = line.find(" ")) != std::string::npos && j < 5)
-						{
-							token = line.substr(0, pos);
-							if (j == 0) // node id
-								qnode.id = stoi(token);
-							if (j == 1) // x
-								qnode.x = stoi(token);
-							if (j == 2) // y
-								qnode.y = stoi(token);
-							if (j == 3) // width
-								qnode.w = stoi(token);
-							if (j == 4) // height
-								qnode.h = stoi(token);
-
-							line.erase(0, pos + 1);
-							j++;
-						}
-						all_quadnodes.push_back(qnode);
-					}
-					if (mode == 4)		// đọc thông tin các objects trong map
-					{
-
-						if (line[0] == ' ')
-							line.erase(0, 1);
-						size_t pos = 0;
-						std::string token;
-						int j = 0;
-						QNodeObjects qobject;
-						while ((pos = line.find(" ")) != std::string::npos && j < 4)
-						{
-							token = line.substr(0, pos);
-							if (j == 0)	// index
-								qobject.index = stoi(token);
-							if (j == 1)	// node id
-								qobject.node_id = stoi(token);
-							if (j == 2)	// x
-								qobject.x = stoi(token);
-							if (j == 3)	// y
-								qobject.y = stoi(token);
-
-							line.erase(0, pos + 1);
-							j++;
-						}
-						all_objects.push_back(qobject);
-					}
-
+					token = line.substr(0, pos);
+					if (j == 0) // map width
+						mWidth = stoi(token);
+					if (j == 1) // map height
+						mHeight = stoi(token);
+					if (j == 2) // row
+						mRows = stoi(token);
+					if (j == 3) // column
+						mCols = stoi(token);
+					if (j == 4) // tile width
+						mTileWidth = stoi(token);
+					if (j == 5) // tile height
+						mTileHeight = stoi(token);
+					line.erase(0, pos + 1);
+					j++;
 				}
+			}
+			if (mode == 2)		// đọc thông tin các items
+			{
+				if (line[0] == ' ')
+					line.erase(0, 1);
+				row++;
+				col = 0;
+				size_t pos = 0;
+				std::string token;
+				int j = 0;
+				QNodeItem item;
 
-		#pragma endregion
+				while ((pos = line.find(" ")) != std::string::npos && j < 4)
+				{
+					token = line.substr(0, pos);
+					if (j == 0)	// index
+						item.index = stoi(token);
+					if (j == 1)	// type id
+						item.typeId = stoi(token);
+					if (j == 2)	// item width
+						item.w = stoi(token);
+					if (j == 3)	// item height
+						item.h = stoi(token);
+					line.erase(0, pos + 1);
+					j++;
+				}
+				all_items.push_back(item);
+			}
+			if (mode == 3)		// đọc thông tin quad tree node
+			{
+				if (line[0] == ' ')
+					line.erase(0, 1);
+				row++;
+				col = 0;
+				size_t pos = 0;
+				std::string token;
+				int j = 0;
+				TileMap qnode;
+				while ((pos = line.find(" ")) != std::string::npos && j < 5)
+				{
+					token = line.substr(0, pos);
+					if (j == 0) // node id
+						qnode.id = stoi(token);
+					if (j == 1) // x
+						qnode.x = stoi(token);
+					if (j == 2) // y
+						qnode.y = stoi(token);
+					if (j == 3) // width
+						qnode.w = stoi(token);
+					if (j == 4) // height
+						qnode.h = stoi(token);
+
+					line.erase(0, pos + 1);
+					j++;
+				}
+				all_quadnodes.push_back(qnode);
+			}
+			if (mode == 4)		// đọc thông tin các objects trong map
+			{
+
+				if (line[0] == ' ')
+					line.erase(0, 1);
+				size_t pos = 0;
+				std::string token;
+				int j = 0;
+				QNodeObjects qobject;
+				while ((pos = line.find(" ")) != std::string::npos && j < 4)
+				{
+					token = line.substr(0, pos);
+					if (j == 0)	// index
+						qobject.index = stoi(token);
+					if (j == 1)	// node id
+						qobject.node_id = stoi(token);
+					if (j == 2)	// x
+						qobject.x = stoi(token);
+					if (j == 3)	// y
+						qobject.y = stoi(token);
+
+					line.erase(0, pos + 1);
+					j++;
+				}
+				all_objects.push_back(qobject);
+			}
+
+		}
+
+#pragma endregion
 
 		myfile.close();
-		for (int j = 0; j < all_objects.size(); j++){
+		/*for (int j = 0; j < all_objects.size(); j++){
 			int typeId = -1;
 			int x = all_objects.at(j).x;
 			int y = all_objects.at(j).y;
@@ -438,42 +444,65 @@ void Map::readMapObjects(LPWSTR mapInfoPath, ResourceManager * resourMgt){
 				all_objects.erase(all_objects.begin() + j--);
 				this->_list_objects.push_back(objAdd);
 			}
-		}
+		}*/
 
-		/*std::vector<CQuadNode*>* all_q_nodes;
+		std::vector<CQuadNode*>* all_q_nodes = new std::vector<CQuadNode*>[1];
 		for (int i = 0; i < all_quadnodes.size(); i++){
-		int id = all_quadnodes.at(i).id;
-		int x = all_quadnodes.at(i).x;
-		int y = all_quadnodes.at(i).y;
-		int w = all_quadnodes.at(i).w;
-		int h = all_quadnodes.at(i).h;
+			int id = all_quadnodes.at(i).id;
+			int x = all_quadnodes.at(i).x;
+			int y = all_quadnodes.at(i).y;
+			int w = all_quadnodes.at(i).w;
+			int h = all_quadnodes.at(i).h;
 
-		std::vector<CGameObject*> q_node_objects;
-		for (int j = 0; j < all_objects.size(); j++){
-		int typeId = -1;
-		int x = all_objects.at(j).x;
-		int y = all_objects.at(j).y;
-		int  w = 0, h = 0;
-		for (int k = 0; k < all_items.size(); k++){
-		if (all_objects.at(j).index == all_items.at(k).index){
-		w = all_items.at(k).w;
-		h = all_items.at(k).w;
-		typeId = all_items.at(k).typeId;
-		break;
-		}
-		}
-		if (typeId ==  BRICK_ID)
-		{
-		CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
-		all_objects.erase(all_objects.begin() + j--);
-		q_node_objects.push_back(objAdd);
-		}
+			std::vector<CGameObject*> q_node_objects;
+			for (int j = 0; j < all_objects.size(); j++){
+				int typeId = -1;
+				int x = all_objects.at(j).x;
+				int y = all_objects.at(j).y;
+				int  w = 0, h = 0;
+				for (int k = 0; k < all_items.size(); k++){
+					if (all_objects.at(j).index == all_items.at(k).index){
+						w = all_items.at(k).w;
+						h = all_items.at(k).w;
+						typeId = all_items.at(k).typeId;
+						break;
+					}
+				}
+				if (all_objects[j].node_id == id){
+					if (typeId == ID_BRICK)
+					{
+						CGameObject * objAdd = new Brick(x, y, w, h, 0.0f, 0.0f);
+						all_objects.erase(all_objects.begin() + j--);
+						q_node_objects.push_back(objAdd);
+					}
+					if (typeId == ID_TILEBOX_NORMAL ||
+						typeId == ID_TILEBOX_COIN ||
+						typeId == ID_TILEBOX_HEART ||
+						typeId == ID_TILEBOX_TIME ||
+						typeId == ID_TILEBOX_VELOCITY ||
+						typeId == ID_TILEBOX_SUPERBOMB){
+						CGameObject * objAdd = new TileBox(typeId, x, y, w, h, resourMgt->getSpriteWithID(ID_TILEBOX_NORMAL));
+						all_objects.erase(all_objects.begin() + j--);
+						q_node_objects.push_back(objAdd);
+					}
+					if (typeId == ID_GIFTBOX_KEY){
+						CGameObject * objAdd = new GiftBox(typeId, -1, x, y, w, h, resourMgt->getSpriteWithID(ID_GIFTBOX_KEY));
+						all_objects.erase(all_objects.begin() + j--);
+						q_node_objects.push_back(objAdd);
+					}
+					if (typeId == ID_DOOR){
+						CGameObject * objAdd = new DoorObject(typeId, x, y, w, h, resourMgt->getSpriteWithID(ID_DOOR));
+						all_objects.erase(all_objects.begin() + j--);
+						q_node_objects.push_back(objAdd);
+					}
+				}
+			}
+
+			CQuadNode* node = new CQuadNode(id, D3DXVECTOR2(x, y), D3DXVECTOR2(w, h), q_node_objects);
+			all_q_nodes->push_back(node);
 		}
 
-		CQuadNode* node = new CQuadNode(id, D3DXVECTOR2(x, y), D3DXVECTOR2(w, h), q_node_objects);
-		all_q_nodes->push_back(node);
-		}
-		this->_m_quad_object = new CQuadTree(all_q_nodes);*/
+		this->_quad_tree = new CQuadTree(all_q_nodes);
 	}
 	return;
 }

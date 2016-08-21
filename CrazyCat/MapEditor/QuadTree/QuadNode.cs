@@ -11,6 +11,7 @@ namespace MapEditor.QuadTree
     class QuadNode
     {
         QuadNode _nodeLT;
+        public int level;
 
         internal QuadNode NodeLT
         {
@@ -39,7 +40,7 @@ namespace MapEditor.QuadTree
             set { _nodeRB = value; }
         }
 
-        List<ItemObject> _objects;
+        public List<ItemObject> _objects;
         int _id;
 
         public int Id
@@ -55,8 +56,9 @@ namespace MapEditor.QuadTree
             set { _partition = value; }
         }
 
-        public QuadNode(int id, Rectangle partition)
+        public QuadNode(int level, int id, Rectangle partition)
         {
+            this.level = level;
             _id = id;
             _partition = partition;
             _nodeLT = null;
@@ -105,9 +107,23 @@ namespace MapEditor.QuadTree
             _objects.Add(objects);
             return true;
         }
-        public List<ItemObject> GetAllObjects()
+        public void GetAllObjects(ref List<ObjectSave> listResult)
         {
-            return _objects;
+            foreach (var item in _objects)
+            {
+                var existObj = listResult.FirstOrDefault(obj => (obj. == item.ItemInfoID));
+                if (existObj == null)
+                    listResult.Add(item);
+            }
+
+            if (_nodeRT != null)
+                GetAllObjects(ref listResult);
+            if (_nodeLT != null)
+                GetAllObjects(ref listResult);
+            if (_nodeRB != null)
+                GetAllObjects(ref listResult);
+            if (_nodeLB != null)
+                GetAllObjects(ref listResult);
         }
         
     }
