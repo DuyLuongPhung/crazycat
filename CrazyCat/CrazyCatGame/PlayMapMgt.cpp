@@ -17,6 +17,8 @@ PlayMapMgt::PlayMapMgt(ResourceManager * resourceMgt)
 	this->_screen_height = 0;
 	this->_resourceMgt = resourceMgt;
 	this->_return_menu = false;
+	this->_play_sound_bg = false;
+	this->_fisrt_update_map = false;
 }
 
 
@@ -25,6 +27,7 @@ PlayMapMgt::~PlayMapMgt()
 	SAFE_DELETE(this->_b_bomber_man);
 	SAFE_DELETE(this->_collision);
 	SAFE_DELETE(this->_b_camera);
+	SoundManager::GetInstance()->Release();
 }
 
 void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
@@ -80,6 +83,7 @@ void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
 
 	//this->nextMap();
 	this->_super_boom = true;
+	this->_play_sound_bg = false;
 
 	// font
 	this->_gb_text_mgt = new CText();
@@ -92,8 +96,7 @@ void PlayMapMgt::inital(CDirectX * directX, int screenWidth, int screenHeight){
 
 void PlayMapMgt::resetCurrentMap(){
 	this->_b_live = DEFAULT_LIVE;
-	this->_b_gold = 0;
-	this->_b_keys = 5;
+	this->_b_keys = 0;
 	if (this->_list_map.size() > this->_current_map && this->_current_map >= 0)
 		this->_b_map_times = this->_list_map.at(this->_current_map)->getMaximumTimes();
 	else
@@ -104,6 +107,25 @@ void PlayMapMgt::resetCurrentMap(){
 	}
 	this->_is_game_over = false;
 	this->_return_menu = false;
+	this->_fisrt_update_map = false;
+}
+
+void PlayMapMgt::defaultMap(){
+	if (this->_list_map.size() > 0)
+	{
+		this->_current_map = 0;
+	}
+	else
+		this->_current_map = -1;
+	this->_super_bomb_count = 0;
+	this->resetCurrentMap();
+	this->startMap();
+	for (int i = 0; i < this->_list_gamebar.size(); i++){
+		if (this->_list_gamebar.at(i)->getId() == GAMEBAR_KEY_BAR_ID){
+			((KeyGameBar*)this->_list_gamebar.at(i))->setMaxKeys(this->_list_map.at(this->_current_map)->getNeedKeys());
+			break;
+		}
+	}
 }
 
 void PlayMapMgt::nextMap(){
@@ -121,18 +143,21 @@ void PlayMapMgt::nextMap(){
 			((KeyGameBar*)this->_list_gamebar.at(i))->setMaxKeys(this->_list_map.at(this->_current_map)->getNeedKeys());
 			break;
 		}
-			
 	}
 }
 
 void PlayMapMgt::startMap(){
 	this->_is_game_starting = true;
 	this->_time_waiting_start = GetTickCount();
+	this->_fisrt_update_map = false;
 }
 
 void PlayMapMgt::gameOver(){
 	this->_is_game_over = true;
 	this->_time_waiting_gameover = GetTickCount();
+	this->_play_sound_bg = false;
+	SoundManager::GetInstance()->getSoundWithID(ID_SOUND_BACKGROUND)->Stop();
+	SoundManager::GetInstance()->getSoundWithID(ID_SOUND_GAME_OVER)->Play();
 	this->_return_menu = false;
 }
 
@@ -186,6 +211,7 @@ void PlayMapMgt::activedNormalBomb(int i){
 		this->_resourceMgt->getSpriteWithID(ID_FIREBANG_BOT),
 		FIREBANG_EXIST_TIME);
 	bottomFirebang->inital(NULL);
+	SoundManager::GetInstance()->getSoundWithID(ID_SOUND_NORMAL_BOMB)->Play();
 	this->_list_map.at(this->_current_map)->_list_objects.push_back(bottomFirebang);
 }
 
@@ -278,6 +304,7 @@ void PlayMapMgt::activedSuperBomb(int i){
 		this->_resourceMgt->getSpriteWithID(ID_FIREBANG_BOT),
 		FIREBANG_EXIST_TIME);
 	bottomFirebang->inital(NULL);
+	SoundManager::GetInstance()->getSoundWithID(ID_SOUND_SUPER_BOMB)->Play();
 	this->_list_map.at(this->_current_map)->_list_objects.push_back(bottomFirebang);
 }
 
@@ -290,9 +317,11 @@ void PlayMapMgt::bomberDied(){
 }
 
 void PlayMapMgt::update(int deltaTime, CDirectX * directX){
+
 	if (!this->_is_game_over && this->_b_map_times < 1)
 	{
 		this->gameOver();
+		SoundManager::GetInstance()->getSoundWithID(ID_SOUND_TIME_OVER)->Play();
 		return;
 	}
 
@@ -318,6 +347,15 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 
 	if (this->_is_game_over || this->_is_game_starting)
 		return;
+	if (!this->_fisrt_update_map){
+		this->_fisrt_update_map = true;
+		SoundManager::GetInstance()->getSoundWithID(ID_SOUND_MAP_START)->Play();
+	}
+
+	if (!this->_play_sound_bg){
+		this->_play_sound_bg = true;
+		SoundManager::GetInstance()->getSoundWithID(ID_SOUND_BACKGROUND)->Repeat();
+	}
 
 	if (this->_list_map.size() <= this->_current_map){
 		return;
@@ -479,6 +517,7 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				// xóa giftbox này
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PICK_ITEM)->Play();
 				break;
 			}
 			else
@@ -497,6 +536,7 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				// xóa giftbox này
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PICK_ITEM)->Play();
 				break;
 			}
 			else
@@ -515,6 +555,7 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				// xóa giftbox này
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PICK_ITEM)->Play();
 				break;
 			}
 			else
@@ -533,6 +574,7 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				// xóa giftbox này
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PICK_ITEM)->Play();
 				break;
 			}
 			else
@@ -552,6 +594,7 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				// xóa giftbox này
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PICK_ITEM)->Play();
 				break;
 			}
 			else
@@ -570,6 +613,7 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 				// xóa giftbox này
 				this->_list_map.at(this->_current_map)->_list_objects.erase(
 					this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
+				SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PICK_ITEM)->Play();
 				break;
 			}
 			else
@@ -588,9 +632,9 @@ void PlayMapMgt::update(int deltaTime, CDirectX * directX){
 			DIRECTION dir = _collision->isCollision(characterBox, tileBox, collisonTime, xOffset, yOffset);
 			if (dir != DIRECTION::NONE){
 				if (((DoorObject*)this->_list_map.at(this->_current_map)->_list_objects.at(i))->isOpen()){
+					SoundManager::GetInstance()->getSoundWithID(ID_SOUND_WINNER)->Play();
+					Sleep(1000);
 					this->nextMap();
-					//this->_list_map.at(this->_current_map)->_list_objects.erase(
-						//this->_list_map.at(this->_current_map)->_list_objects.begin() + i--);
 				}
 				else
 				{
@@ -777,6 +821,7 @@ void PlayMapMgt::addBomb(LPD3DXSPRITE spriteHandler){
 		newBomb->inital(NULL);
 		this->_list_map.at(this->_current_map)->_list_objects.push_back(newBomb);
 	}
+	SoundManager::GetInstance()->getSoundWithID(ID_SOUND_ADD_BOMB)->Play();
 	this->_b_bomber_man->AddBomb();
 }
 

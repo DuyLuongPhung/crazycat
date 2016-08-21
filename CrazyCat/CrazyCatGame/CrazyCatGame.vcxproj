@@ -60,7 +60,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;dxerr.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;dinput8.lib;dsound.lib;dxerr.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -91,6 +91,7 @@
     <ClCompile Include="CrazyCat.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="DoorObject.cpp" />
+    <ClCompile Include="dsutil.cpp" />
     <ClCompile Include="DynamicGameObject.cpp" />
     <ClCompile Include="FireBang.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -109,6 +110,9 @@
     <ClCompile Include="QuadNode.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SoundResource.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteResource.cpp" />
     <ClCompile Include="StaticGameObject.cpp" />
@@ -129,6 +133,7 @@
     <ClInclude Include="CrazyCat.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="DoorObject.h" />
+    <ClInclude Include="dsutil.h" />
     <ClInclude Include="DynamicGameObject.h" />
     <ClInclude Include="FireBang.h" />
     <ClInclude Include="Game.h" />
@@ -146,6 +151,9 @@
     <ClInclude Include="QuadNode.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SoundResource.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteResource.h" />
     <ClInclude Include="StaticGameObject.h" />

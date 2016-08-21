@@ -26,9 +26,6 @@ CrazyCat::~CrazyCat()
 	SAFE_DELETE(this->_resourceMgt);
 }
 
-bool intersec = false;
-
-int loop = 0;
 void CrazyCat::Update(int delta)
 {
 	if (this->_g_currrent_mode == GAME_MODE::PlayMap){
@@ -37,8 +34,12 @@ void CrazyCat::Update(int delta)
 			this->_g_currrent_mode = GAME_MODE::PlayMenu;
 			return;
 		}
-
+		
 		this->_g_mapmgt->update(delta, this->_directXDivice);
+	}
+	else{
+		this->_g_mapmgt->setPlayBackground(false);
+		SoundManager::GetInstance()->getSoundWithID(ID_SOUND_BACKGROUND)->Stop();
 	}
 }
 
@@ -56,7 +57,7 @@ void CrazyCat::LoadResources(LPDIRECT3DDEVICE9 d3ddv)
 	this->_g_mapmgt = new PlayMapMgt(this->_resourceMgt);
 	this->_g_mapmgt->inital(this->_directXDivice, this->_screenWidth, this->_screenHeight);
 
-
+	SoundManager::GetInstance()->inital(this->_directXDivice);
 }
 
 void CrazyCat::RenderFrame(LPDIRECT3DDEVICE9 d3ddv, int t)
@@ -117,8 +118,12 @@ void CrazyCat::OnKeyDown(int KeyCode)
 				this->_is_exit = true;
 			}
 			else{
+
+				if (!this->_g_menu->isPauseMenu()){
+					SoundManager::GetInstance()->getSoundWithID(ID_SOUND_GAME_START)->Play();
+					this->_g_mapmgt->defaultMap();
+				}
 				_g_currrent_mode = GAME_MODE::PlayMap;
-				this->_g_mapmgt->nextMap();
 			}
 		}
 		else if (_g_currrent_mode == GAME_MODE::PlayMap){
@@ -129,25 +134,33 @@ void CrazyCat::OnKeyDown(int KeyCode)
 		break;
 	}
 	case DIK_UP:
-		if (_g_currrent_mode == GAME_MODE::PlayMenu)
+		if (_g_currrent_mode == GAME_MODE::PlayMenu){
+			SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PAUSE)->Play();
 			_g_menu->preButton();
+		}
+			
 		break;
 	case DIK_DOWN:
-		if (_g_currrent_mode == GAME_MODE::PlayMenu)
+		if (_g_currrent_mode == GAME_MODE::PlayMenu){
+			SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PAUSE)->Play();
 			_g_menu->nextButton();
+		}
 		break;
 	case DIK_TAB:
 	{
 		if (_g_currrent_mode == GAME_MODE::PlayHelp)
 		{
+			SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PAUSE)->Play();
 			_g_currrent_mode = GAME_MODE::PlayMenu;
 		}
 		else if (_g_currrent_mode == GAME_MODE::PlayMenu){
-			this->_is_exit = true;
+			//this->_is_exit = true;
 		}
 		else if (_g_currrent_mode == GAME_MODE::PlayMap){
 			if (this->_g_mapmgt->isWaiting())
 				return;
+			this->_g_menu->resetMenu(true);
+			SoundManager::GetInstance()->getSoundWithID(ID_SOUND_PAUSE)->Play();
 			_g_currrent_mode = GAME_MODE::PlayMenu;
 		}
 

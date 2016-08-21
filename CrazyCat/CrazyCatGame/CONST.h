@@ -72,8 +72,8 @@
 #define BOMBER_BEHIND_IMG L"bomber_behind.png"
 #define BOMBER_DEAD_IMG L"bomber_dead.png"
 #define BOMBER_ANIMATE_RATE 16
-#define BOMBER_START_X  70
-#define BOMBER_START_Y  1020
+#define BOMBER_START_X  1504//70
+#define BOMBER_START_Y  96//1020
 #define BOMBER_WIDTH 18
 #define BOMBER_HEIGHT 18
 #define BOMBER_HEIGHT_HEAD 9
@@ -149,7 +149,7 @@
 #define GAMEBAR_SUPERBOMB_BAR_Y 2
 
 /* Các thông số cho map */
-#define MAP_01_TIME_MAP 60000000
+#define MAP_01_TIME_MAP 1200000000
 #define MAP_01_IMG_FILE L"map1.img"
 #define MAP_01_TEXT_FILE L"map1.map"
 #define MAP_01_INFO_FILE L"map1.info"
@@ -164,3 +164,29 @@
 #define MAP_TIME_WAITING 5000
 #define MAP_GAME_OVER_IMG L"game_over.png"
 #define MAP_START_MAP_IMG L"start_map.png"
+
+/* Âm thanh cho game */ 
+#define ID_SOUND_BACKGROUND 1
+#define SOUND_BACKGROUND L"resources\\sounds\\background.wav"
+#define ID_SOUND_GAME_START 2
+#define SOUND_GAME_START L"resources\\sounds\\game_start.wav"
+#define ID_SOUND_MAP_START 3
+#define SOUND_MAP_START L"resources\\sounds\\start_map.wav"
+#define ID_SOUND_ADD_BOMB 4
+#define SOUND_ADD_BOMB L"resources\\sounds\\add_bomb.wav"
+#define ID_SOUND_BOMBER_WALK 5
+#define SOUND_BOMBER_WALK L"resources\\sounds\\bomber_walk.wav"
+#define ID_SOUND_GAME_OVER 6
+#define SOUND_GAME_OVER L"resources\\sounds\\game_over.wav"
+#define ID_SOUND_NORMAL_BOMB 7
+#define SOUND_NORMAL_BOMB L"resources\\sounds\\normal_bomb.wav"
+#define ID_SOUND_PAUSE 8
+#define SOUND_PAUSE L"resources\\sounds\\pause.wav"
+#define ID_SOUND_PICK_ITEM 9
+#define SOUND_PICK_ITEM L"resources\\sounds\\pick_item.wav"
+#define ID_SOUND_SUPER_BOMB 10
+#define SOUND_SUPER_BOMB L"resources\\sounds\\super_bomb.wav"
+#define ID_SOUND_TIME_OVER 11
+#define SOUND_TIME_OVER L"resources\\sounds\\time_over.wav"
+#define ID_SOUND_WINNER 12
+#define SOUND_WINNER L"resources\\sounds\\winner.wav"

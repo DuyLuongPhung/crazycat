@@ -28,9 +28,24 @@ CDirectX::~CDirectX(void)
 int CDirectX::InitDirectX()
 {
 	InitDirect3D();
-	//InitDirectInput();
-	//InitDirectSound();
+	InitDirectSound();
 	return 1;
+}
+
+int CDirectX::InitDirectSound()
+{
+	HRESULT hr;
+	hr = DirectSoundCreate8(0, &this->_lpDirectSound, 0);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+	hr = this->_lpDirectSound->SetCooperativeLevel(this->_hWnd, DSSCL_PRIORITY);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+	return true;
 }
 
 int CDirectX::InitDirect3D()
@@ -102,6 +117,10 @@ LPDIRECT3DDEVICE9 CDirectX::getDevice()
 LPD3DXSPRITE CDirectX::getSpriteHandler()
 {
 	return _spriteHandler;
+}
+
+LPDIRECTSOUND8 CDirectX::getSoundDevice(){
+	return this->_lpDirectSound;
 }
 
 LPDIRECT3DSURFACE9 LoadSurfaceFromFile(LPDIRECT3DDEVICE9 d3ddev, LPWSTR filePath, D3DCOLOR transparentColor)

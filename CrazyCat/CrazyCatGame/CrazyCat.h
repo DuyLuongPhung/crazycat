@@ -19,6 +19,7 @@
 #include "HelpMgt.h"
 #include "PlayMapMgt.h"
 #include "ResourceManager.h"
+#include "SoundManager.h"
 
 
 enum GAME_MODE{
@@ -37,8 +38,6 @@ public:
 	GameMenu * _g_menu;
 	ResourceManager * _resourceMgt;
 
-
-	
 public:
 	CrazyCat(HINSTANCE hInstance, LPWSTR name, int mode, int is_fullscreen, int frame_rate);
 	~CrazyCat();

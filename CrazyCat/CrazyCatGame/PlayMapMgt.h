@@ -17,6 +17,7 @@
 #include "ResourceManager.h"
 #include "TimeGameBar.h"
 #include "KeyGameBar.h"
+#include "SoundManager.h"
 
 class PlayMapMgt
 {
@@ -53,15 +54,19 @@ private:
 	DWORD _time_waiting_gameover;
 
 	bool _return_menu;
-
+	bool _play_sound_bg;
+	bool _fisrt_update_map;
 	// 
 public:
 	PlayMapMgt(ResourceManager * resourceMgt);
 	~PlayMapMgt();
 
+	void			setPlayBackground(bool isPlay){ this->_play_sound_bg = isPlay; }
+
 	void			resetCurrentMap();
 	bool			isWaiting(){ return (this->_is_game_starting || this->_is_game_over); }
 	void			nextMap();
+	void			defaultMap();
 	void			gameOver();
 	bool			isReturnMenu(){ return this->_return_menu; }
 
