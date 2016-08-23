@@ -43,7 +43,7 @@ void CQuadTree::addObject(CGameObject* object){
 }
 
 std::vector<CGameObject*> CQuadTree::getObjectList(CBox viewBox){
-	std::vector<CGameObject*>* objects = new std::vector<CGameObject*>[1];
+	std::vector<CGameObject*> objects;
 	this->_q_root->GetObjectsIn(viewBox, objects);
-	return (*objects);
+	return (objects);
 }

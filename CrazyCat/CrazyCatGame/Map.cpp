@@ -446,6 +446,32 @@ void Map::readMapObjects(LPWSTR mapInfoPath, ResourceManager * resourMgt){
 			}
 		}*/
 
+		int start = 0;
+		int end = all_quadnodes.size()-1;
+		while (end > start){
+			for (int j = start; j < end; j++)
+			{
+				if (all_quadnodes[j].id > all_quadnodes[j + 1].id){
+					TileMap tm1(all_quadnodes[j].id, all_quadnodes[j].x, all_quadnodes[j].y, all_quadnodes[j].w, all_quadnodes[j].h);
+					TileMap tm2(all_quadnodes[j + 1].id, all_quadnodes[j + 1].x, all_quadnodes[j + 1].y, all_quadnodes[j + 1].w, all_quadnodes[j + 1].h);
+					all_quadnodes[j] = tm2;;
+					all_quadnodes[j + 1] = tm1;
+				}
+			}
+			end--;
+			for (int j = end; j > start; j--)
+			{
+				if (all_quadnodes[j].id < all_quadnodes[j - 1].id){
+					TileMap tm1(all_quadnodes[j].id, all_quadnodes[j].x, all_quadnodes[j].y, all_quadnodes[j].w, all_quadnodes[j].h);
+					TileMap tm2(all_quadnodes[j - 1].id, all_quadnodes[j - 1].x, all_quadnodes[j - 1].y, all_quadnodes[j - 1].w, all_quadnodes[j - 1].h);
+					all_quadnodes[j] = tm2;;
+					all_quadnodes[j - 1] = tm1;
+				}
+			}
+			start++;
+		}
+		
+
 		std::vector<CQuadNode*>* all_q_nodes = new std::vector<CQuadNode*>[1];
 		for (int i = 0; i < all_quadnodes.size(); i++){
 			int id = all_quadnodes.at(i).id;

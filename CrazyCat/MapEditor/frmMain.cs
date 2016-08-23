@@ -100,8 +100,8 @@ namespace MapEditor
                 frm.ShowDialog();
                 if (!frm.IsAddItem)
                     return;
-                _listSourceItem.Add(new ItemInfo(_itemIndex++, frm.ItemTypeId,frm.ShowImage,frm.ImgPath,frm.IsMovable,frm.CountSprite,
-                    frm.SpritePerRow,frm.TileWidth,frm.TileHeight));
+                _listSourceItem.Add(new ItemInfo(_itemIndex++, frm.ItemTypeId, frm.ShowImage, frm.ImgPath, frm.IsMovable, frm.CountSprite,
+                    frm.SpritePerRow, frm.TileWidth, frm.TileHeight));
                 imageListView1.AddImageToList(frm.ShowImage);
             }
             catch (Exception ex)
@@ -281,7 +281,7 @@ namespace MapEditor
                 MessageBox.Show(ex.Message);
             }
             this.Cursor = Cursors.Default;
-                }
+        }
         private void btnExport_Click(object sender, EventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
@@ -304,7 +304,7 @@ namespace MapEditor
                                   pnMapDraw.ClientSize.Height))
                     {
                         pnMapDraw.DrawToBitmap(bitmap, pnMapDraw.ClientRectangle);
-                        bitmap.Save(Path.Combine(folder,"fullImage.png"), System.Drawing.Imaging.ImageFormat.Png);
+                        bitmap.Save(Path.Combine(folder, "fullImage.png"), System.Drawing.Imaging.ImageFormat.Png);
                     }
 
                     save = false;
@@ -369,8 +369,8 @@ namespace MapEditor
         {
             var p = sender as Panel;
             var g = e.Graphics;
-            if(!save)
-            DrawGridLine(g, p);
+            if (!save)
+                DrawGridLine(g, p);
             DrawAllItem(g);
         }
 
@@ -390,7 +390,7 @@ namespace MapEditor
                 y = _margin + row * (_tileHeight);
 
                 ItemObject item = new ItemObject(_listSourceItem[_index].Index, _listSourceItem[_index].TypeID, x, y, _listSourceItem[_index].ItemWidth, _listSourceItem[_index].ItemHeight);
-                
+
                 int search = _allItemAdded.FindIndex(it => (it.ItemRectangle.X == item.ItemRectangle.X && it.ItemRectangle.Y == item.ItemRectangle.Y
                     && it.ItemRectangle.Width == item.ItemRectangle.Width && item.ItemRectangle.Height == item.ItemRectangle.Height));
                 if (search >= 0)
@@ -486,7 +486,7 @@ namespace MapEditor
                     + (_columns) + " "                  // columns
                     + (_tileWidth) + " "                // tile width
                     + (_tileHeight) + " "               // tile height
-                    + (_screenWidth) +" "               // screen width
+                    + (_screenWidth) + " "               // screen width
                     + (_screenHeight) + " "             // screen height
                     );
                 strWriter.WriteLine();
@@ -508,15 +508,15 @@ namespace MapEditor
                     //string itemNameSave = Path.GetFileNameWithoutExtension(_listSourceItem[i].Path);
                     //string pathImage = Path.Combine(pathSave, itemNameSave + ".png");
                     //if (_listSourceItem[i].ID > 5)      // các item động
-                     //   img.Save(pathImage, ImageFormat.Png);
+                    //   img.Save(pathImage, ImageFormat.Png);
                     //else
-                       // pathImage = "*";
-                    strWriter.WriteLine("" 
+                    // pathImage = "*";
+                    strWriter.WriteLine(""
                         + _listSourceItem[i].Index + " "               // item index
                         + _listSourceItem[i].TypeID + " "               // item type ID
                         + _listSourceItem[i].ItemWidth + " "        // item width
                         + _listSourceItem[i].ItemHeight + " "       // item height
-                        ); 
+                        );
                 }
                 strWriter.WriteLine();
 
@@ -524,19 +524,28 @@ namespace MapEditor
                 int mapHeight = _background.Height;
 
                 QuadTree.QuadTree quadTree = new QuadTree.QuadTree();
+                List<ObjectSave> allItemExport = new List<ObjectSave>();
+                int uniqu = 0;
                 foreach (var item in _allItemAdded)
                 {
+                    allItemExport.Add(new ObjectSave()
+                    {
+                        unique = uniqu++,
+                        index = item.ItemInfoIndex,
+                        partionRect = new Rectangle(item.ItemRectangle.X, mapHeight - item.ItemRectangle.Y,
+                            item.ItemRectangle.Width, item.ItemRectangle.Height)
+                    });
                     item.ItemRectangle.Y = mapHeight - item.ItemRectangle.Y;
                 }
-                quadTree.SetAllData(_allItemAdded, new Rectangle(0, _screenHeight, mapWidth, mapHeight));
+                quadTree.SetAllData(allItemExport, new Rectangle(0, mapHeight, mapWidth, mapHeight));
                 // write node
                 ExportQuadTreeNode(quadTree.Root, strWriter);
                 strWriter.WriteLine();
 
                 // write objects
-                List<ItemObject> listResult = new List<ItemObject>();
-                quadTree.Root.GetAllObjects(ref listResult);
-                ExportQuadTreeObject(listResult, strWriter);
+                //List<ItemObject> listResult = new List<ItemObject>();
+                //quadTree.Root.GetAllObjects(ref listResult);
+                ExportQuadTreeObject(quadTree.Root, strWriter);
                 strWriter.WriteLine();
                 strWriter.Close();
                 return true;
@@ -547,7 +556,7 @@ namespace MapEditor
             }
         }
 
-        private bool ExportQuadTreeNode(QuadNode root , StreamWriter strWriter)
+        private bool ExportQuadTreeNode(QuadNode root, StreamWriter strWriter)
         {
             if (root == null)
                 return false;
@@ -570,18 +579,27 @@ namespace MapEditor
             return true;
         }
 
-        private bool ExportQuadTreeObject(List<ItemObject> listResult, StreamWriter strWriter)
+        private bool ExportQuadTreeObject(QuadNode root, StreamWriter strWriter)
         {
             //write object's information
-            for (int i = 0; i < listResult.Count; i++)
+            for (int i = 0; i < root._objects.Count; i++)
             {
                 strWriter.WriteLine(""
-                    + listResult[i].ItemInfoIndex + " "               // item index
-                    + root.Id + " "                             // node id 
-                    + allItem[i].ItemRectangle.X + " "          // position X
-                    + allItem[i].ItemRectangle.Y + " "          // position Y
+                    + root._objects[i].unique + " "              // unique index
+                    + root._objects[i].index + " "               // item index
+                    + root.Id + " "                                     // node id 
+                    + root._objects[i].partionRect.X + " "          // position X
+                    + root._objects[i].partionRect.Y + " "          // position Y
                     );
             }
+            if (root.NodeLT != null)
+                ExportQuadTreeObject(root.NodeLT, strWriter);       // save left-top node
+            if (root.NodeLB != null)
+                ExportQuadTreeObject(root.NodeLB, strWriter);       // save left-bottom node
+            if (root.NodeRB != null)
+                ExportQuadTreeObject(root.NodeRB, strWriter);       // save right-bottom node
+            if (root.NodeRT != null)
+                ExportQuadTreeObject(root.NodeRT, strWriter);       // save right-top node
             return true;
         }
 
@@ -633,7 +651,7 @@ namespace MapEditor
                     );
                 strWriter.WriteLine();
 
-                 // basic information
+                // basic information
                 strWriter.WriteLine(resultBitmap.Count + " ");
                 strWriter.WriteLine();
 
@@ -665,7 +683,7 @@ namespace MapEditor
                         strWriter.WriteLine();
                         strWriter.Write(" ");
                     }
-                    strWriter.Write(mapIndex[j]+" ");
+                    strWriter.Write(mapIndex[j] + " ");
                 }
                 strWriter.WriteLine();
                 strWriter.WriteLine();
@@ -683,7 +701,7 @@ namespace MapEditor
             if (bmp1.Size != bmp2.Size)
                 return false;
 
-            for (int x = 0; x < bmp1.Width; x++) 
+            for (int x = 0; x < bmp1.Width; x++)
             {
                 for (int y = 0; y < bmp1.Height; y++)
                 {
@@ -763,13 +781,13 @@ namespace MapEditor
                     Bitmap img = new Bitmap(Image.FromStream(streamImg));
                     streamImg.Flush();
                     streamImg.Close();
-                    
+
 
                     string itemNameSave = Path.GetFileNameWithoutExtension(_listSourceItem[i].Path);
                     string pathImage = Path.Combine(pathFolder + "\\Tiles", _listSourceItem[i].Index + ".png");
                     Bitmap saveBitmap = new Bitmap(img);
                     saveBitmap.Save(pathImage, ImageFormat.Png);
-                    
+
                     strWriter.WriteLine(""
                         + _listSourceItem[i].Index + " "               // item index
                         + _listSourceItem[i].TypeID + " "               // item type ID
@@ -819,7 +837,7 @@ namespace MapEditor
                     throw new Exception("Cannot find info file. Here, sure that info file is exist in this folder.");
                 if (!File.Exists(filePathBackground))
                     throw new Exception("Cannot find background image file. Here, sure that image file is exist in this folder.");
-              
+
                 DefaultValue();
 
                 #region Background
@@ -860,9 +878,9 @@ namespace MapEditor
 
                 string[] allBasicInfo = infoLine.Split(' ');
                 _rows = int.Parse(allBasicInfo[2]);
-                _columns =  int.Parse(allBasicInfo[3]);
-                _tileWidth =  int.Parse(allBasicInfo[4]);
-                _tileHeight =  int.Parse(allBasicInfo[5]);
+                _columns = int.Parse(allBasicInfo[3]);
+                _tileWidth = int.Parse(allBasicInfo[4]);
+                _tileHeight = int.Parse(allBasicInfo[5]);
                 _screenWidth = int.Parse(allBasicInfo[6]);
                 _screenHeight = int.Parse(allBasicInfo[7]);
 
@@ -884,7 +902,7 @@ namespace MapEditor
                     Image resourceImageImg = Image.FromStream(streamImg);
                     streamImg.Flush();
                     streamImg.Close();
-                    
+
                     _listSourceItem.Add(new ItemInfo(index, id, resourceImageImg, path, isMovable, countSprite, spritePerRow, itemWidth, itemHeight));
                 }
 

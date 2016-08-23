@@ -8,6 +8,9 @@
 #include "Box.h"
 #include <algorithm> 
 #include "GameObject.h"
+#include <iostream>
+#include <algorithm>
+#include <iterator>
 
 class CQuadNode
 {
@@ -16,7 +19,7 @@ public:
 	CQuadNode(int id, D3DXVECTOR2 position, D3DXVECTOR2 size, std::vector<CGameObject*> listObjects);
 	~CQuadNode();
 
-	void GetObjectsIn(CBox viewport, std::vector<CGameObject*>* objects);
+	void GetObjectsIn(CBox viewport, std::vector<CGameObject*> &objects);
 	void AddNode(CQuadNode* node);
 	void AddObject(CGameObject* object);
 	CBox GetBox();

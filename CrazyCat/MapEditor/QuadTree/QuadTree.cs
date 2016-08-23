@@ -18,7 +18,7 @@ namespace MapEditor.QuadTree
             set { _root = value; }
         }
 
-        public void SetAllData(List<ItemObject> allObjects, Rectangle mapPartition)
+        public void SetAllData(List<ObjectSave> allObjects, Rectangle mapPartition)
         {
             if (allObjects == null)
                 throw new Exception("List objects is null!");
@@ -27,13 +27,13 @@ namespace MapEditor.QuadTree
             SetQuadTree(allObjects, _root);
         }
 
-        private void SetQuadTree(List<MapEditor.UserControlDesign.ItemObject> allObjects, QuadNode root)
+        private void SetQuadTree(List<ObjectSave> allObjects, QuadNode root)
         {
             if (root.level >= maxLevel)  // ko chia them nua
             {
-                foreach (ItemObject obj in allObjects)
+                foreach (ObjectSave obj in allObjects)
                 {
-                    if (root.Partition.IntersectsWith(obj.ItemRectangle))
+                    if (root.Partition.IntersectsWith(obj.partionRect))
                     {
                         root._objects.Add(obj);
                     }
@@ -42,15 +42,17 @@ namespace MapEditor.QuadTree
             }
 
             int cLevel = root.level;
+            int width = root.Partition.Width / 2;
+            int height = root.Partition.Height / 2;
+            int x = root.Partition.X;
+            int y = root.Partition.Y;
+            int x1 = x + width;
+            int y1 = y - height;
 
-            root.NodeRT = new QuadNode(cLevel + 1, (root.Id * 4 + 1), new Rectangle(root.Partition.X + root.Partition.Width/2,
-                root.Partition.Y, root.Partition.Width / 2, root.Partition.Height / 2));
-            root.NodeLT = new QuadNode(cLevel + 1, (root.Id * 4 + 2), new Rectangle(root.Partition.X,
-                root.Partition.Y, root.Partition.Width / 2, root.Partition.Height / 2));
-            root.NodeLB = new QuadNode(cLevel + 1, (root.Id * 4 + 3), new Rectangle(root.Partition.X,
-                root.Partition.Y - root.Partition.Height / 2, root.Partition.Width / 2, root.Partition.Height / 2));
-            root.NodeRB = new QuadNode(cLevel + 1, (root.Id * 4 + 4), new Rectangle(root.Partition.X + root.Partition.Width/2,
-                root.Partition.Y - root.Partition.Height / 2, root.Partition.Width / 2, root.Partition.Height / 2));
+            root.NodeRT = new QuadNode(cLevel + 1, (root.Id * 4 + 1), new Rectangle(x1,y,width,height));
+            root.NodeLT = new QuadNode(cLevel + 1, (root.Id * 4 + 2), new Rectangle(x,y,width,height));
+            root.NodeLB = new QuadNode(cLevel + 1, (root.Id * 4 + 3), new Rectangle(x,y1,width,height));
+            root.NodeRB = new QuadNode(cLevel + 1, (root.Id * 4 + 4), new Rectangle(x1,y1,width,height));
 
             SetQuadTree(allObjects, root.NodeRT);
             SetQuadTree(allObjects, root.NodeLT);

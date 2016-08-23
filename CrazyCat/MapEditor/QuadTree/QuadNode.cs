@@ -40,7 +40,7 @@ namespace MapEditor.QuadTree
             set { _nodeRB = value; }
         }
 
-        public List<ItemObject> _objects;
+        public List<ObjectSave> _objects;
         int _id;
 
         public int Id
@@ -65,7 +65,7 @@ namespace MapEditor.QuadTree
             _nodeRT = null;
             _nodeLB = null;
             _nodeRB = null;
-            _objects = new List<ItemObject>();
+            _objects = new List<ObjectSave>();
         }
 
         public void AddNode(QuadNode node)
@@ -102,28 +102,28 @@ namespace MapEditor.QuadTree
             if (_nodeLB != null)
                 _nodeLB.AddNode(node);
         }
-        public bool AddObject(ItemObject objects)
+        public bool AddObject(ObjectSave objects)
         {
             _objects.Add(objects);
             return true;
         }
-        public void GetAllObjects(ref List<ObjectSave> listResult)
+        public void GetAllObjects(ref List<ItemObject> listResult)
         {
-            foreach (var item in _objects)
-            {
-                var existObj = listResult.FirstOrDefault(obj => (obj. == item.ItemInfoID));
-                if (existObj == null)
-                    listResult.Add(item);
-            }
+            //foreach (var item in _objects)
+            //{
+            //    var existObj = listResult.FirstOrDefault(obj => (obj.ItemInfoID == item.ItemInfoID));
+            //    if (existObj == null)
+            //        listResult.Add(item);
+            //}
 
-            if (_nodeRT != null)
-                GetAllObjects(ref listResult);
-            if (_nodeLT != null)
-                GetAllObjects(ref listResult);
-            if (_nodeRB != null)
-                GetAllObjects(ref listResult);
-            if (_nodeLB != null)
-                GetAllObjects(ref listResult);
+            //if (_nodeRT != null)
+            //    GetAllObjects(ref listResult);
+            //if (_nodeLT != null)
+            //    GetAllObjects(ref listResult);
+            //if (_nodeRB != null)
+            //    GetAllObjects(ref listResult);
+            //if (_nodeLB != null)
+            //    GetAllObjects(ref listResult);
         }
         
     }

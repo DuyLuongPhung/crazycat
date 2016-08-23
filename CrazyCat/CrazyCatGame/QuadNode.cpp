@@ -36,28 +36,45 @@ CQuadNode::~CQuadNode()
 	SAFE_DELETE(_nodeRB);
 }
 
-void CQuadNode::GetObjectsIn(CBox objBox, std::vector<CGameObject*>* objects)
+bool searchInVector(std::vector<CGameObject*> objects, CGameObject *object){
+	for (int i = 0; i < objects.size(); i++){
+		if (objects[i]->getPosition() == object->getPosition()
+			&& objects[i]->getWidth() == object->getWidth()
+			&& objects[i]->getHeight() == object->getHeight()
+			&& objects[i]->getId() == object->getId())
+			return true;
+	}
+	return false;
+}
+
+void CQuadNode::GetObjectsIn(CBox objBox, std::vector<CGameObject*> &objects)
 {
-	CBox thisBox = GetBox();
+	CBox thisBox = this->GetBox();
 	if (thisBox.IsIntersectedWith(objBox))
 	{
 		if (this->isLeaf())
 		{
 			if (_list_objects.size() > 0)
 			{
-				for (int i = 0; i < _list_objects.size(); i++)
-					if (objBox.IsIntersectedWith(_list_objects[i]->getBounding()))
-						(*objects).push_back(_list_objects[i]);						
-				std::sort(objects->begin(), objects->end(), IDGreater);								// Sắp xếp lại các đối tượng
-				objects->erase(std::unique(objects->begin(), objects->end()), objects->end());		// Xóa  các phần tử giống nhau trong danh sách
+				for (int i = 0; i < _list_objects.size(); i++){
+					if (objBox.IsIntersectedWith(_list_objects[i]->getBounding())){
+						if (!searchInVector(objects, _list_objects[i])){
+							(objects).push_back(_list_objects[i]);
+						}
+					}
+				}
 			}
 		}
 		else
 		{
-			_nodeLT->GetObjectsIn(objBox, objects);
-			_nodeRT->GetObjectsIn(objBox, objects);
-			_nodeLB->GetObjectsIn(objBox, objects);
-			_nodeRB->GetObjectsIn(objBox, objects);
+			if (_nodeLT != NULL)
+				_nodeLT->GetObjectsIn(objBox, objects);
+			if (_nodeRT != NULL)
+				_nodeRT->GetObjectsIn(objBox, objects);
+			if (_nodeLB != NULL)
+				_nodeLB->GetObjectsIn(objBox, objects);
+			if (_nodeRB != NULL)
+				_nodeRB->GetObjectsIn(objBox, objects);
 		}
 	}
 }
@@ -126,5 +143,5 @@ void CQuadNode::AddObject(CGameObject* object)
 
 CBox CQuadNode::GetBox()
 {
-	return CBox(_position.x, _position.y, _size.x,_size.y, 0.0f, 0.0f);
+	return CBox(_position.x, _position.y, _size.x, _size.y, 0.0f, 0.0f);
 }
