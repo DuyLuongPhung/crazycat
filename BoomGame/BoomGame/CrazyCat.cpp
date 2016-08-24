@@ -121,6 +121,7 @@ void CrazyCat::OnKeyDown(int KeyCode)
 
 				if (!this->_g_menu->isPauseMenu()){
 					SoundManager::GetInstance()->getSoundWithID(ID_SOUND_GAME_START)->Play();
+					this->_g_mapmgt->inital(this->_directXDivice, this->_screenWidth, this->_screenHeight);
 					this->_g_mapmgt->defaultMap();
 				}
 				_g_currrent_mode = GAME_MODE::PlayMap;
